@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/alata"
-        android:text="Hai Hilmi Besar"
+        android:text="test perubahan"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="42dp"
         android:textStyle="bold"
