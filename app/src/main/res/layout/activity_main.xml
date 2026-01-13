@@ -53,6 +53,11 @@
         tools:layout_editor_absoluteX="30dp" />
 
     <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/kotak"
+
+    <ImageView
         android:layout_width="600dp"
         android:layout_height="260dp"
         android:background="@drawable/oval"
