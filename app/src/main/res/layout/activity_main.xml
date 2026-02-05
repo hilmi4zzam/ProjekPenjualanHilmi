@@ -31,12 +31,13 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/alata"
         android:text="Halo Hilmi!"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
         android:textSize="42dp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="137dp"
-        tools:ignore="MissingConstraints" />
+        android:layout_marginTop="137dp"
+        android:layout_marginLeft="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <TextView
         android:id="@+id/selamatdatang"
@@ -44,13 +45,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="57dp"
         android:fontFamily="@font/alata"
-        tools:ignore="MissingConstraints"
         android:text="Selamat datang!"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@+id/haihilmi"
-        tools:layout_editor_absoluteX="30dp" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="30dp"/>
 
     <ImageView
         android:layout_width="match_parent"
@@ -85,12 +86,12 @@
                 android:textColor="@color/black"
                 android:text="Saldo Anda :"
                 android:fontFamily="@font/alata"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="18dp"/>
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="27dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -102,29 +103,19 @@
             android:textSize="34dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvSaldoAnda"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="25dp"
             android:layout_marginTop="12dp"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/img_3"
-            app:layout_constraintRight_toLeftOf="@id/noteIcon"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginRight="3dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="5dp"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/noteIcon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/logotransaksi"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@drawable/img_1"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginRight="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="6dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,10 +168,32 @@
         app:layout_constraintStart_toEndOf="@id/menu1"
         app:layout_constraintEnd_toStartOf="@id/menu3"
         app:layout_constraintTop_toBottomOf="@id/kolomSaldo"
-        android:background="@drawable/backgroundkotakmenu"
-        >
+        android:background="@drawable/backgroundkotakmenu">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:id="@+id/logokategori"
+            android:layout_height="50dp"
+            android:background="@drawable/img_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="13dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvkategori"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tvkategori"
+            android:layout_height="wrap_content"
+            android:text="Kategori"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/alata"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logokategori"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -196,7 +209,30 @@
         android:background="@drawable/backgroundkotakmenu"
         android:layout_marginEnd="30dp">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:id="@+id/logocabang"
+            android:layout_height="50dp"
+            android:background="@drawable/img_5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="13dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvcabang"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tvcabang"
+            android:layout_height="wrap_content"
+            android:text="Cabang"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/alata"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logocabang"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -212,7 +248,30 @@
         android:background="@drawable/backgroundkotakmenu"
         android:layout_marginStart="30dp">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:id="@+id/logopegawai"
+            android:layout_height="50dp"
+            android:background="@drawable/img_6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="13dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvpegawai"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tvpegawai"
+            android:layout_height="wrap_content"
+            android:text="Pegawai"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/alata"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logopegawai"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -226,10 +285,32 @@
         app:layout_constraintStart_toEndOf="@id/menu4"
         app:layout_constraintEnd_toStartOf="@id/menu6"
         app:layout_constraintTop_toBottomOf="@id/menu2"
-        android:background="@drawable/backgroundkotakmenu"
-        >
+        android:background="@drawable/backgroundkotakmenu">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:id="@+id/logoprinter"
+            android:layout_height="50dp"
+            android:background="@drawable/img_7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="13dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvprinter"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tvprinter"
+            android:layout_height="wrap_content"
+            android:text="Printer"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/alata"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logoprinter"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -245,7 +326,30 @@
         android:background="@drawable/backgroundkotakmenu"
         android:layout_marginEnd="30dp">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:id="@+id/logolaporan"
+            android:layout_height="50dp"
+            android:background="@drawable/img_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="13dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvlaporan"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tvlaporan"
+            android:layout_height="wrap_content"
+            android:text="Laporan"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/alata"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logolaporan"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
