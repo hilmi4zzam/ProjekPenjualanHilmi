@@ -74,6 +74,8 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:text="Simpan"
+        android:backgroundTint="#fec901"
+        android:textColor="@color/black"
         android:id="@+id/btnModKategoriSimpan"
         app:layout_constraintTop_toBottomOf="@id/tilModKategoriStatus"
         app:layout_constraintEnd_toEndOf="parent"

@@ -51,10 +51,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:textSize="20sp"
-            android:fontFamily="@font/alata"
 
             app:chipIcon="@drawable/img_10"
-            app:chipIconSize="18dp"
+            app:chipIconSize="20dp"
             app:chipIconVisible="true"
 
             app:chipStrokeWidth="1dp"
