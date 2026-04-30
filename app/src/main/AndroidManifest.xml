@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjekPenjualanHilmi">
         <activity
-            android:name="kategori.modKategoriActivity"
+            android:name=".kategori.ModKategori"
             android:exported="false" />
         <activity
-            android:name="kategori.dataKategoriActivity"
+            android:name=".kategori.DataKategori"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

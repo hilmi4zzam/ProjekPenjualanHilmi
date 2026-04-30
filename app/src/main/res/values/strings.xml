@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ProjekPenjualanHilmi</string>
+    <string-array name="statusKategori">
+        <item>Aktif</item>
+        <item>Nonaktif</item>
+    </string-array>
 </resources>

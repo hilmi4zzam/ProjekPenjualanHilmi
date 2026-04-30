@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.hilmi.projekpenjualan" />
+                  <option name="mobileSdkAppId" value="1:651421546121:android:8b725dfdde6daa5f71b858" />
+                  <option name="projectId" value="pojek-penjualan-hilmi" />
+                  <option name="projectNumber" value="651421546121" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
