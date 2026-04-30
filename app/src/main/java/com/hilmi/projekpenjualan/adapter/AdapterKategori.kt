@@ -45,7 +45,7 @@ class AdapterKategori(private val kategoriList: List<ModelKategori>) :
 
         fun bind(kategori: ModelKategori) {
             tvNamaKategori.text = kategori.namaKategori
-            val status = kategori.statusKategori
+            chipStatus.text = kategori.statusKategori
 
             itemView.setOnClickListener {
                 listener?.onItemClick(kategori)

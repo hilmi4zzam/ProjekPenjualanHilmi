@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.adapter.AdapterKategori
 import com.hilmi.projekpenjualan.model.DataKategoriViewModel
@@ -21,8 +22,7 @@ class DataKategori : AppCompatActivity() {
 
     private val viewModel: DataKategoriViewModel by viewModels()
     private lateinit var rvDATAKATEGORI: RecyclerView
-    private lateinit var fabDATAKATEGORITambah: FloatingActionButton
-    private lateinit var tvkosong: TextView
+    private lateinit var fabDATAKATEGORITambah: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
