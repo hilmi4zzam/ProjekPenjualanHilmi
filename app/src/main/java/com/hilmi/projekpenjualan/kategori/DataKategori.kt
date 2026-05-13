@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.adapter.AdapterKategori
 import com.hilmi.projekpenjualan.model.DataKategoriViewModel
@@ -85,17 +86,17 @@ class DataKategori : AppCompatActivity() {
     }
 
     private fun showDeleteDialog(kategori: ModelKategori) {
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-        builder.setTitle("Hapus Kategori")
-        builder.setMessage("\nApakah Anda yakin ingin menghapus kategori ${kategori.namaKategori}?")
-        builder.setPositiveButton("Hapus") { _, _ ->
-            viewModel.deleteKategori(kategori.idKategori)
-            Toast.makeText(this, "${kategori.namaKategori} berhasil dihapus", Toast.LENGTH_SHORT).show()
-        }
-        builder.setNegativeButton("Batal") { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.show()
+        MaterialAlertDialogBuilder(this, R.style.WhiteMaterialAlertDialog)
+            .setTitle("Hapus Kategori")
+            .setMessage("\nApakah Anda yakin ingin menghapus kategori ${kategori.namaKategori}?")
+            .setPositiveButton("Hapus") { _, _ ->
+                viewModel.deleteKategori(kategori.idKategori)
+                Toast.makeText(this, "${kategori.namaKategori} berhasil dihapus", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun showKategoriDetail(kategori: ModelKategori) {

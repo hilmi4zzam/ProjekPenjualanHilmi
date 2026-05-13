@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjekPenjualanHilmi">
         <activity
+            android:name=".produk.ModProduk"
+            android:exported="false" />
+        <activity
             android:name=".produk.DataProduk"
             android:exported="false" />
         <activity

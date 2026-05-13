@@ -7,5 +7,8 @@
 
     <style name="Theme.ProjekPenjualanHilmi" parent="Base.Theme.ProjekPenjualanHilmi" />
 
+    <style name="WhiteMaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@android:color/white</item>
+    </style>
 
 </resources>
