@@ -70,13 +70,35 @@ class DataKategori : AppCompatActivity() {
                         ).show()
                     }
                 }
+
+                override fun onStatusClick(kategori: ModelKategori) {
+                    val newStatus = if (kategori.statusKategori == "Aktif") "Nonaktif" else "Aktif"
+                    viewModel.updateStatus(kategori.idKategori, newStatus)
+                    Toast.makeText(this@DataKategori, "${kategori.namaKategori} di $newStatus'kan ", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onItemLongClick(kategori: ModelKategori) {
+                    showDeleteDialog(kategori)
+                }
             })
         }
     }
 
-    //dontol
+    private fun showDeleteDialog(kategori: ModelKategori) {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setTitle("Hapus Kategori")
+        builder.setMessage("\nApakah Anda yakin ingin menghapus kategori ${kategori.namaKategori}?")
+        builder.setPositiveButton("Hapus") { _, _ ->
+            viewModel.deleteKategori(kategori.idKategori)
+            Toast.makeText(this, "${kategori.namaKategori} berhasil dihapus", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
 
     private fun showKategoriDetail(kategori: ModelKategori) {
-        Toast.makeText(this, "Klik: ${kategori.namaKategori}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Tahan untuk menghapus ${kategori.namaKategori}", Toast.LENGTH_SHORT).show()
     }
 }

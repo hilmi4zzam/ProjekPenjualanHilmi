@@ -69,4 +69,28 @@ class DataKategoriViewModel : ViewModel() {
             isSearchEmpty.value = filteredList.isEmpty()
         }
     }
+
+    fun updateStatus(idKategori: String?, newStatus: String) {
+        if (idKategori != null) {
+            myRef.child(idKategori).child("statusKategori").setValue(newStatus)
+                .addOnSuccessListener {
+                    Log.d("DataKategoriViewModel", "Status updated to $newStatus")
+                }
+                .addOnFailureListener {
+                    Log.e("DataKategoriViewModel", "Failed to update status: ${it.message}")
+                }
+        }
+    }
+
+    fun deleteKategori(idKategori: String?) {
+        if (idKategori != null) {
+            myRef.child(idKategori).removeValue()
+                .addOnSuccessListener {
+                    Log.d("DataKategoriViewModel", "Kategori deleted successfully")
+                }
+                .addOnFailureListener {
+                    Log.e("DataKategoriViewModel", "Failed to delete kategori: ${it.message}")
+                }
+        }
+    }
 }

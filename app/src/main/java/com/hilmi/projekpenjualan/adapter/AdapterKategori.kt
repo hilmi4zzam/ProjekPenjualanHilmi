@@ -17,6 +17,8 @@ class AdapterKategori(private val kategoriList: List<ModelKategori>) :
 
     interface OnItemClickListener {
         fun onItemClick(kategori: ModelKategori)
+        fun onStatusClick(kategori: ModelKategori)
+        fun onItemLongClick(kategori: ModelKategori)
     }
 
     private var listener: OnItemClickListener? = null
@@ -47,8 +49,24 @@ class AdapterKategori(private val kategoriList: List<ModelKategori>) :
             tvNamaKategori.text = kategori.namaKategori
             chipStatus.text = kategori.statusKategori
 
+            // Mengatur icon berdasarkan status
+            if (kategori.statusKategori == "Aktif") {
+                chipStatus.setChipIconResource(R.drawable.lingkaran_online)
+            } else {
+                chipStatus.setChipIconResource(R.drawable.lingkaran_offline)
+            }
+
             itemView.setOnClickListener {
                 listener?.onItemClick(kategori)
+            }
+
+            itemView.setOnLongClickListener {
+                listener?.onItemLongClick(kategori)
+                true
+            }
+
+            chipStatus.setOnClickListener {
+                listener?.onStatusClick(kategori)
             }
         }
     }

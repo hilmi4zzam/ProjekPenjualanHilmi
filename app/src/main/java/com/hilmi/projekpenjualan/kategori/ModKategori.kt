@@ -71,7 +71,7 @@ class ModKategori : AppCompatActivity() {
                         finish()
                     }
                     .addOnFailureListener {
-                        Toast.makeText(this, "Gagal menyimpan katrgori: ${it.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Gagal menyimpan kategori: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
             }
         }
