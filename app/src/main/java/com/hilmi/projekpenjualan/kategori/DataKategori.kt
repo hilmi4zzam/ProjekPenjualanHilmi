@@ -15,7 +15,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.adapter.AdapterKategori
-import com.hilmi.projekpenjualan.model.DataKategoriViewModel
+import com.hilmi.projekpenjualan.view_model.DataKategoriViewModel
 import com.hilmi.projekpenjualan.model.ModelKategori
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 

@@ -1,4 +1,4 @@
-package com.hilmi.projekpenjualan.model
+package com.hilmi.projekpenjualan.view_model
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.hilmi.projekpenjualan.model.ModelKategori
 
 class DataKategoriViewModel : ViewModel() {
     private val database = FirebaseDatabase.getInstance()
