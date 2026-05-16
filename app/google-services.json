@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "651421546121",
+    "firebase_url": "https://pojek-penjualan-hilmi-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pojek-penjualan-hilmi",
+    "storage_bucket": "pojek-penjualan-hilmi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651421546121:android:8b725dfdde6daa5f71b858",
+        "android_client_info": {
+          "package_name": "com.hilmi.projekpenjualan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv-CZEVTL78fSI42JjnY-J-jW2Hq9791c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651421546121:android:46ae58711ec7b87371b858",
+        "android_client_info": {
+          "package_name": "com.hilmi.projekpenjualanhlmz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv-CZEVTL78fSI42JjnY-J-jW2Hq9791c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
