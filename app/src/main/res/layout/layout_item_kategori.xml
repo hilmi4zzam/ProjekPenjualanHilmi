@@ -19,7 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/logoitemkategori"
             android:layout_height="50dp"
-            app:cardCornerRadius="23dp"
+            app:cardCornerRadius="15dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:strokeWidth="0dp"
