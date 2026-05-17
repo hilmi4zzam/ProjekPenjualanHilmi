@@ -7,6 +7,7 @@ class ModelProduk(
     val idProduk: String? = null,
     val namaProduk: String? = null,
     val hargaProduk: Int? = 0,
+    var statusProduk: String? =null,
     val idKategori: String? = null,
     val idCabang: String? = null,
     val fotoProduk: String? = null,
@@ -14,14 +15,12 @@ class ModelProduk(
     var createdAt: String? = null,
     var updateAt: String? = null
 ) : Parcelable {
-    var jumlahTerjual: Int = 0
-        get() = field
-        set(value) { field = value }
 
     constructor(parcel: Parcel) : this(
         idProduk = parcel.readString(),
         namaProduk = parcel.readString(),
         hargaProduk = parcel.readValue(Int::class.java.classLoader) as? Int,
+        statusProduk = parcel.readString(),
         idKategori = parcel.readString(),
         idCabang = parcel.readString(),
         fotoProduk = parcel.readString(),
@@ -34,6 +33,7 @@ class ModelProduk(
         parcel.writeString(idProduk)
         parcel.writeString(namaProduk)
         parcel.writeValue(hargaProduk)
+        parcel.writeString(statusProduk)
         parcel.writeString(idKategori)
         parcel.writeString(idCabang)
         parcel.writeString(fotoProduk)
