@@ -8,6 +8,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.hilmi.projekpenjualan.cabang.DataCabang
 import com.hilmi.projekpenjualan.kategori.DataKategori
 import com.hilmi.projekpenjualan.produk.DataProduk
 
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var CardKategori : ConstraintLayout
     lateinit var CardProduk : ConstraintLayout
+    lateinit var CardCabang : ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +39,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        CardCabang.setOnClickListener {
+            val intent = Intent(this@MainActivity, DataCabang::class.java)
+            startActivity(intent)
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -48,5 +55,6 @@ class MainActivity : AppCompatActivity() {
     fun init() {
         CardKategori = findViewById(R.id.menu2)
         CardProduk = findViewById(R.id.menu1)
+        CardCabang = findViewById(R.id.menu3)
     }
 }
