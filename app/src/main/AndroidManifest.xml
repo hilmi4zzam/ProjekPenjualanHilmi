@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjekPenjualanHilmi">
         <activity
+            android:name=".cabang.ModCabang"
+            android:exported="false" />
+        <activity
             android:name=".cabang.DataCabang"
             android:exported="false" />
         <activity

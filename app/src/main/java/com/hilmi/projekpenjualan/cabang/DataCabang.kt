@@ -1,21 +1,105 @@
 package com.hilmi.projekpenjualan.cabang
 
 import android.os.Bundle
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import android.content.Intent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hilmi.projekpenjualan.R
+import com.hilmi.projekpenjualan.adapter.AdapterKategori
+import com.hilmi.projekpenjualan.view_model.DataKategoriViewModel
+import com.hilmi.projekpenjualan.model.ModelKategori
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class DataCabang : AppCompatActivity() {
+
+    private val viewModel: DataKategoriViewModel by viewModels()
+    private lateinit var rvDATAKATEGORI: RecyclerView
+    private lateinit var fabDATAKATEGORITambah: MaterialButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_data_cabang)
+        setContentView(R.layout.activity_data_kategori)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        init()
+
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.reverseLayout = true
+        layoutManager.stackFromEnd = true
+
+        rvDATAKATEGORI.layoutManager = layoutManager
+        rvDATAKATEGORI.setHasFixedSize(true)
+    }
+
+    private fun init() {
+        rvDATAKATEGORI = findViewById(R.id.rvDataKategori)
+        fabDATAKATEGORITambah = findViewById(R.id.btnTambahKategori)
+
+        fabDATAKATEGORITambah.setOnClickListener {
+            val intent = Intent(this@DataCabang, ModCabang::class.java)
+            startActivity(intent)
+        }
+
+        viewModel.kategoriList.observe(this) { list ->
+            val adapter = AdapterKategori(list)
+            rvDATAKATEGORI.adapter = adapter
+
+            adapter.setOnItemClickListener(object : AdapterKategori.OnItemClickListener {
+                override fun onItemClick(kategori: ModelKategori) {
+                    if (!kategori.idKategori.isNullOrBlank()) {
+                        showKategoriDetail(kategori)
+                    } else {
+                        Toast.makeText(
+                            this@DataCabang,
+                            "ID kategori kosong",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onStatusClick(kategori: ModelKategori) {
+                    val newStatus = if (kategori.statusKategori == "Aktif") "Nonaktif" else "Aktif"
+                    viewModel.updateStatus(kategori.idKategori, newStatus)
+                    Toast.makeText(this@DataCabang, "${kategori.namaKategori} di $newStatus'kan ", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onItemLongClick(kategori: ModelKategori) {
+                    showDeleteDialog(kategori)
+                }
+            })
+        }
+    }
+
+    private fun showDeleteDialog(kategori: ModelKategori) {
+        MaterialAlertDialogBuilder(this, R.style.WhiteMaterialAlertDialog)
+            .setTitle("Hapus Kategori")
+            .setMessage("\nApakah Anda yakin ingin menghapus kategori ${kategori.namaKategori}?")
+            .setPositiveButton("Hapus") { _, _ ->
+                viewModel.deleteKategori(kategori.idKategori)
+                Toast.makeText(this, "${kategori.namaKategori} berhasil dihapus", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showKategoriDetail(kategori: ModelKategori) {
+        Toast.makeText(this, "Tahan untuk menghapus ${kategori.namaKategori}", Toast.LENGTH_SHORT).show()
     }
 }

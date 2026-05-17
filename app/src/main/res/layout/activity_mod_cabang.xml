@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".cabang.ModCabang">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tambah Cabang"
+            android:id="@+id/tvTambahCabang"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:fontFamily="@font/alata"
+            android:textStyle="bold"
+            android:textSize="40sp"
+            android:layout_marginTop="80dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/black"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilModCabangNama"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="30dp"
+            app:boxCornerRadiusBottomEnd="23dp"
+            app:boxCornerRadiusTopStart="23dp"
+            app:boxCornerRadiusBottomStart="23dp"
+            app:boxCornerRadiusTopEnd="23dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="30dp"
+            android:textColorHint="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/tvTambahCabang"
+            android:hint="Nama Cabang">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:id="@+id/tietNamaCabang"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/alata"
+                android:textSize="20sp"
+                android:textColor="@color/black"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilModCabangStatus"
+            android:layout_width="match_parent"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            app:boxCornerRadiusBottomEnd="23dp"
+            app:boxCornerRadiusTopStart="23dp"
+            app:boxCornerRadiusBottomStart="23dp"
+            app:boxCornerRadiusTopEnd="23dp"
+            android:layout_marginEnd="30dp"
+            android:textColorHint="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/tilModCabangNama"
+            android:hint="Status">
+
+            <AutoCompleteTextView
+                android:id="@+id/spModCabangStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:labelFor="@id/spModKategoriStatus"
+                android:fontFamily="@font/alata"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:entries="@array/statusKategori"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="Simpan"
+            android:backgroundTint="#fec901"
+            android:textColor="@color/black"
+            android:id="@+id/btnModCabangSimpan"
+            app:layout_constraintTop_toBottomOf="@id/tilModCabangStatus"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="30dp"
+            app:cornerRadius="23dp"
+            android:fontFamily="@font/alata"
+            android:textSize="20sp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
