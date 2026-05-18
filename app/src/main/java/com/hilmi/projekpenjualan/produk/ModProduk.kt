@@ -10,8 +10,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.hilmi.projekpenjualan.R
+import com.hilmi.projekpenjualan.model.ModelCabang
+import com.hilmi.projekpenjualan.model.ModelKategori
 
 class ModProduk : AppCompatActivity() {
 
@@ -24,6 +29,8 @@ class ModProduk : AppCompatActivity() {
 
     private val database = FirebaseDatabase.getInstance()
     private val myRef = database.getReference("produk")
+    private val refKategori = database.getReference("kategori")
+    private val refCabang = database.getReference("cabang")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,14 +39,9 @@ class ModProduk : AppCompatActivity() {
 
         init()
 
-        // Setup Dropdowns
-        val kategoriList = resources.getStringArray(R.array.statusKategori)
-        val adapterKategori = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, kategoriList)
-        spKategori.setAdapter(adapterKategori)
-
-        val cabangList = arrayOf("Pusat", "Cabang 1", "Cabang 2")
-        val adapterCabang = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, cabangList)
-        spCabang.setAdapter(adapterCabang)
+        // Setup Dropdowns from Firebase to spinner auto complete
+        getKategoriFromFirebase()
+        getCabangFromFirebase()
 
         btnSimpan.setOnClickListener {
             simpanData()
@@ -50,6 +52,43 @@ class ModProduk : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    //buat ambil data dari firebase untuk ditampilkan ke spinner auto complete
+    private fun getKategoriFromFirebase() {
+        refKategori.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val listNamaKategori = mutableListOf<String>()
+                for (data in snapshot.children) {
+                    val kategori = data.getValue(ModelKategori::class.java)
+                    kategori?.namaKategori?.let { listNamaKategori.add(it) }
+                }
+                val adapter = ArrayAdapter(this@ModProduk, android.R.layout.simple_dropdown_item_1line, listNamaKategori)
+                spKategori.setAdapter(adapter)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ModProduk, "Gagal memuat kategori: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun getCabangFromFirebase() {
+        refCabang.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val listNamaCabang = mutableListOf<String>()
+                for (data in snapshot.children) {
+                    val cabang = data.getValue(ModelCabang::class.java)
+                    cabang?.namaCabang?.let { listNamaCabang.add(it) }
+                }
+                val adapter = ArrayAdapter(this@ModProduk, android.R.layout.simple_dropdown_item_1line, listNamaCabang)
+                spCabang.setAdapter(adapter)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ModProduk, "Gagal memuat cabang: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun init() {
