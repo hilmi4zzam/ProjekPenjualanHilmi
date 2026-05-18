@@ -44,7 +44,43 @@ class ModProduk : AppCompatActivity() {
         getCabangFromFirebase()
 
         btnSimpan.setOnClickListener {
-            simpanData()
+            val nama = etNama.text.toString().trim()
+            val harga = etHarga.text.toString().trim()
+            val stok = etStok.text.toString().trim()
+            val kategori = spKategori.text.toString()
+            val cabang = spCabang.text.toString()
+
+            if (nama.isEmpty()) {
+                etNama.error = "Nama cabang wajib diisi"
+                return@setOnClickListener
+            }
+            if (harga.isEmpty()) {
+                etHarga.error = "Harga wajib diisi"
+                return@setOnClickListener
+            }
+            if (stok.isEmpty()) {
+                etNama.error = "Jumlah stok wajib diisi"
+                return@setOnClickListener
+            }
+
+            val key = myRef.push().key
+            if (key != null) {
+                val produkData = mapOf(
+                    "idProduk" to key,
+                    "namaProduk" to nama,
+                    "hargaProduk" to harga.toInt(),
+                    "stokProduk" to stok.toInt(),
+                    "idKategori" to kategori,
+                    "idCabang" to cabang
+                )
+
+                myRef.child(key).setValue(produkData).addOnSuccessListener {
+                    Toast.makeText(this, "Produk berhasil disimpan", Toast.LENGTH_SHORT).show()
+                    finish()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Gagal menyimpan: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -98,37 +134,5 @@ class ModProduk : AppCompatActivity() {
         spKategori = findViewById(R.id.spModKategoriProduk)
         spCabang = findViewById(R.id.spModCabangProduk)
         btnSimpan = findViewById(R.id.btnModProdukSimpan)
-    }
-
-    private fun simpanData() {
-        val nama = etNama.text.toString().trim()
-        val harga = etHarga.text.toString().trim()
-        val stok = etStok.text.toString().trim()
-        val kategori = spKategori.text.toString()
-        val cabang = spCabang.text.toString()
-
-        if (nama.isEmpty() || harga.isEmpty() || stok.isEmpty()) {
-            Toast.makeText(this, "Harap isi semua data", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val key = myRef.push().key
-        if (key != null) {
-            val produkData = mapOf(
-                "idProduk" to key,
-                "namaProduk" to nama,
-                "hargaProduk" to harga.toInt(),
-                "stokProduk" to stok.toInt(),
-                "idKategori" to kategori,
-                "idCabang" to cabang
-            )
-
-            myRef.child(key).setValue(produkData).addOnSuccessListener {
-                Toast.makeText(this, "Produk berhasil disimpan", Toast.LENGTH_SHORT).show()
-                finish()
-            }.addOnFailureListener {
-                Toast.makeText(this, "Gagal menyimpan: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }

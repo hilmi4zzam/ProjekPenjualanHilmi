@@ -36,7 +36,29 @@ class ModCabang : AppCompatActivity() {
         if (statusList.isNotEmpty()) spStatus.setText(statusList[0], false)
 
         btnSimpan.setOnClickListener {
-            simpanData()
+            val nama = etNama.text.toString().trim()
+            val status = spStatus.text.toString()
+
+            if (nama.isEmpty()) {
+                etNama.error = "Nama cabang wajib diisi"
+                return@setOnClickListener
+            }
+
+            val key = myRef.push().key
+            if (key != null) {
+                val cabangData = mapOf(
+                    "idCabang" to key,
+                    "namaCabang" to nama,
+                    "statusCabang" to status
+                )
+
+                myRef.child(key).setValue(cabangData).addOnSuccessListener {
+                    Toast.makeText(this, "Cabang berhasil disimpan", Toast.LENGTH_SHORT).show()
+                    finish()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Gagal menyimpan: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -50,31 +72,5 @@ class ModCabang : AppCompatActivity() {
         etNama = findViewById(R.id.tietNamaCabang)
         spStatus = findViewById(R.id.spModCabangStatus)
         btnSimpan = findViewById(R.id.btnModCabangSimpan)
-    }
-
-    private fun simpanData() {
-        val nama = etNama.text.toString().trim()
-        val status = spStatus.text.toString()
-
-        if (nama.isEmpty()) {
-            etNama.error = "Nama cabang wajib diisi"
-            return
-        }
-
-        val key = myRef.push().key
-        if (key != null) {
-            val cabangData = mapOf(
-                "idCabang" to key,
-                "namaCabang" to nama,
-                "statusCabang" to status
-            )
-
-            myRef.child(key).setValue(cabangData).addOnSuccessListener {
-                Toast.makeText(this, "Cabang berhasil disimpan", Toast.LENGTH_SHORT).show()
-                finish()
-            }.addOnFailureListener {
-                Toast.makeText(this, "Gagal menyimpan: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }
