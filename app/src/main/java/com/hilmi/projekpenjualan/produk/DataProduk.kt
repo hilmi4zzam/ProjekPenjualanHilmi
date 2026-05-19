@@ -44,6 +44,12 @@ class DataProduk : AppCompatActivity() {
                     // Implementasi edit jika diperlukan
                 }
 
+                override fun onStatusClick(produk: ModelProduk) {
+                    val statusBaru = if (produk.statusProduk == "Aktif") "Nonaktif" else "Aktif"
+                    viewModel.updateStatus(produk.idProduk, statusBaru)
+                    Toast.makeText(this@DataProduk, "Status ${produk.namaProduk} diubah", Toast.LENGTH_SHORT).show()
+                }
+
                 override fun onItemLongClick(produk: ModelProduk) {
                     showDeleteDialog(produk)
                 }

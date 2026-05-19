@@ -25,6 +25,7 @@ class ModProduk : AppCompatActivity() {
     private lateinit var etStok: TextInputEditText
     private lateinit var spKategori: AutoCompleteTextView
     private lateinit var spCabang: AutoCompleteTextView
+    private lateinit var spStatus: AutoCompleteTextView
     private lateinit var btnSimpan: MaterialButton
 
     private val database = FirebaseDatabase.getInstance()
@@ -43,12 +44,19 @@ class ModProduk : AppCompatActivity() {
         getKategoriFromFirebase()
         getCabangFromFirebase()
 
+        // Setup Status Dropdown
+        val statusList = resources.getStringArray(R.array.statusKategori)
+        val adapterStatus = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, statusList)
+        spStatus.setAdapter(adapterStatus)
+        if (statusList.isNotEmpty()) spStatus.setText(statusList[0], false)
+
         btnSimpan.setOnClickListener {
             val nama = etNama.text.toString().trim()
             val harga = etHarga.text.toString().trim()
             val stok = etStok.text.toString().trim()
             val kategori = spKategori.text.toString()
             val cabang = spCabang.text.toString()
+            val status = spStatus.text.toString()
 
             if (nama.isEmpty()) {
                 etNama.error = "Nama cabang wajib diisi"
@@ -62,6 +70,14 @@ class ModProduk : AppCompatActivity() {
                 etStok.error = "Jumlah stok wajib diisi"
                 return@setOnClickListener
             }
+            if (kategori.isEmpty()) {
+                spKategori.error = "Kategori wajib diisi"
+                return@setOnClickListener
+            }
+            if (cabang.isEmpty()) {
+                spCabang.error = "Cabang wajib diisi"
+                return@setOnClickListener
+            }
 
             val key = myRef.push().key
             if (key != null) {
@@ -71,7 +87,8 @@ class ModProduk : AppCompatActivity() {
                     "hargaProduk" to harga.toInt(),
                     "stokProduk" to stok.toInt(),
                     "idKategori" to kategori,
-                    "idCabang" to cabang
+                    "idCabang" to cabang,
+                    "statusProduk" to status
                 )
 
                 myRef.child(key).setValue(produkData).addOnSuccessListener {
@@ -133,6 +150,7 @@ class ModProduk : AppCompatActivity() {
         etStok = findViewById(R.id.tietStokProduk)
         spKategori = findViewById(R.id.spModKategoriProduk)
         spCabang = findViewById(R.id.spModCabangProduk)
+        spStatus = findViewById(R.id.spModStatusProduk)
         btnSimpan = findViewById(R.id.btnModProdukSimpan)
     }
 }

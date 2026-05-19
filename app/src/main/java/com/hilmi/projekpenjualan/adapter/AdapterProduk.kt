@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.ModelProduk
 import java.text.NumberFormat
@@ -15,6 +16,7 @@ class AdapterProduk(private val produkList: List<ModelProduk>) :
 
     interface OnItemClickListener {
         fun onItemClick(produk: ModelProduk)
+        fun onStatusClick(produk: ModelProduk)
         fun onItemLongClick(produk: ModelProduk)
     }
 
@@ -42,6 +44,7 @@ class AdapterProduk(private val produkList: List<ModelProduk>) :
         private val tvKategori: TextView = itemView.findViewById(R.id.tvKategoriProduk)
         private val tvStok: TextView = itemView.findViewById(R.id.tvStokProduk)
         private val tvCabang: TextView = itemView.findViewById(R.id.tvCabangProduk)
+        private val chipStatus: Chip = itemView.findViewById(R.id.chipAktif)
 
         fun bind(produk: ModelProduk) {
             tvNama.text = produk.namaProduk
@@ -54,8 +57,20 @@ class AdapterProduk(private val produkList: List<ModelProduk>) :
             tvStok.text = (produk.stokProduk ?: 0).toString()
             tvCabang.text = produk.idCabang
 
+            // Status Chip Logic
+            chipStatus.text = produk.statusProduk
+            if (produk.statusProduk == "Aktif") {
+                chipStatus.setChipIconResource(R.drawable.lingkaran_online)
+            } else {
+                chipStatus.setChipIconResource(R.drawable.lingkaran_offline)
+            }
+
             itemView.setOnClickListener {
                 listener?.onItemClick(produk)
+            }
+
+            chipStatus.setOnClickListener {
+                listener?.onStatusClick(produk)
             }
 
             itemView.setOnLongClickListener {

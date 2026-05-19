@@ -70,4 +70,10 @@ class DataProdukViewModel : ViewModel() {
             myRef.child(idProduk).removeValue()
         }
     }
+
+    fun updateStatus(idProduk: String?, newStatus: String) {
+        if (idProduk != null) {
+            myRef.child(idProduk).child("statusProduk").setValue(newStatus)
+        }
+    }
 }

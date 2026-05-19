@@ -170,6 +170,37 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilModStatusProduk"
+            android:layout_width="match_parent"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            app:boxCornerRadiusBottomEnd="23dp"
+            app:boxCornerRadiusTopStart="23dp"
+            app:boxCornerRadiusBottomStart="23dp"
+            app:boxCornerRadiusTopEnd="23dp"
+            android:layout_marginEnd="30dp"
+            android:textColorHint="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/tilModCabangProduk"
+            android:hint="Status">
+
+            <AutoCompleteTextView
+                android:id="@+id/spModStatusProduk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:labelFor="@id/spModStatusProduk"
+                android:fontFamily="@font/alata"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:entries="@array/statusKategori"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="70dp"
@@ -177,7 +208,7 @@
             android:backgroundTint="#fec901"
             android:textColor="@color/black"
             android:id="@+id/btnModProdukSimpan"
-            app:layout_constraintTop_toBottomOf="@id/tilModCabangProduk"
+            app:layout_constraintTop_toBottomOf="@id/tilModStatusProduk"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginEnd="30dp"
