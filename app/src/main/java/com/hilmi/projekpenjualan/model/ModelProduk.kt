@@ -8,6 +8,7 @@ class ModelProduk(
     val namaProduk: String? = null,
     val hargaProduk: Int? = 0,
     val statusProduk: String? = null,
+    val idKategori: String? = null,
     val idCabang: String? = null,
     val fotoProduk: String? = null,
     val stokProduk: Int? = 0,
@@ -20,6 +21,7 @@ class ModelProduk(
         namaProduk = parcel.readString(),
         hargaProduk = parcel.readValue(Int::class.java.classLoader) as? Int,
         statusProduk = parcel.readString(),
+        idKategori = parcel.readString(),
         idCabang = parcel.readString(),
         fotoProduk = parcel.readString(),
         stokProduk = parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -32,7 +34,7 @@ class ModelProduk(
         parcel.writeString(namaProduk)
         parcel.writeValue(hargaProduk)
         parcel.writeString(statusProduk)
-        parcel.writeString(statusProduk)
+        parcel.writeString(idKategori)
         parcel.writeString(idCabang)
         parcel.writeString(fotoProduk)
         parcel.writeValue(stokProduk)

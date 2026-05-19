@@ -50,7 +50,7 @@ class AdapterProduk(private val produkList: List<ModelProduk>) :
             val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
             tvHarga.text = formatRupiah.format(produk.hargaProduk ?: 0)
             
-            tvKategori.text = produk.statusProduk
+            tvKategori.text = produk.idKategori
             tvStok.text = (produk.stokProduk ?: 0).toString()
             tvCabang.text = produk.idCabang
 
