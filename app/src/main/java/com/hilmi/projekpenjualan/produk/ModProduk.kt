@@ -59,7 +59,7 @@ class ModProduk : AppCompatActivity() {
                 return@setOnClickListener
             }
             if (stok.isEmpty()) {
-                etNama.error = "Jumlah stok wajib diisi"
+                etStok.error = "Jumlah stok wajib diisi"
                 return@setOnClickListener
             }
 
