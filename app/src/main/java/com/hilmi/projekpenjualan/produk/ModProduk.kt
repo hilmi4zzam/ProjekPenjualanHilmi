@@ -107,7 +107,7 @@ class ModProduk : AppCompatActivity() {
         }
     }
 
-    //buat ambil data dari firebase untuk ditampilkan ke spinner auto complete
+    //buat ambil data dari firebase untuk ditampilkan ke spinner auto complete(tak tandai make merah merah)
     private fun getKategoriFromFirebase() {
         refKategori.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
