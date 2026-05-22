@@ -128,7 +128,7 @@
         app:layout_constraintBottom_toTopOf="@id/layoutPesanSekarang"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/layout_item_produk"/>
+        tools:listitem="@layout/layout_item_transaction"/>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
