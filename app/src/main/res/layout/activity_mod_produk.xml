@@ -98,6 +98,8 @@
             app:layout_constraintTop_toBottomOf="@id/tilModProdukHarga"
             android:hint="Kategori">
 
+<!--            mulai hari ini aku fokus ngerjain pjbl nya pak binar-->
+
             <AutoCompleteTextView
                 android:id="@+id/spModKategoriProduk"
                 android:layout_width="match_parent"
