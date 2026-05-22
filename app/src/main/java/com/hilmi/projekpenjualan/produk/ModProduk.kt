@@ -114,7 +114,10 @@ class ModProduk : AppCompatActivity() {
                 val listNamaKategori = mutableListOf<String>()
                 for (data in snapshot.children) {
                     val kategori = data.getValue(ModelKategori::class.java)
-                    kategori?.namaKategori?.let { listNamaKategori.add(it) }
+                    // Hanya tampilkan kategori yang statusnya "Aktif"
+                    if (kategori?.statusKategori == "Aktif") {
+                        kategori.namaKategori?.let { listNamaKategori.add(it) }
+                    }
                 }
                 val adapter = ArrayAdapter(this@ModProduk, android.R.layout.simple_dropdown_item_1line, listNamaKategori)
                 spKategori.setAdapter(adapter)
@@ -132,7 +135,10 @@ class ModProduk : AppCompatActivity() {
                 val listNamaCabang = mutableListOf<String>()
                 for (data in snapshot.children) {
                     val cabang = data.getValue(ModelCabang::class.java)
-                    cabang?.namaCabang?.let { listNamaCabang.add(it) }
+                    // Hanya tampilkan cabang yang statusnya "Aktif"
+                    if (cabang?.statusCabang == "Aktif") {
+                        cabang.namaCabang?.let { listNamaCabang.add(it) }
+                    }
                 }
                 val adapter = ArrayAdapter(this@ModProduk, android.R.layout.simple_dropdown_item_1line, listNamaCabang)
                 spCabang.setAdapter(adapter)
