@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hilmi.projekpenjualan.R
-import com.hilmi.projekpenjualan.adapter.AdapterTransaction
+import com.hilmi.projekpenjualan.adapter.AdapterTransaksi
 import com.hilmi.projekpenjualan.view_model.DataProdukViewModel
 import java.text.NumberFormat
 import java.util.Locale
@@ -20,7 +20,7 @@ import java.util.Locale
 class DataTransaksi : AppCompatActivity() {
 
     private val viewModel: DataProdukViewModel by viewModels()
-    private lateinit var adapter: AdapterTransaction
+    private lateinit var adapter: AdapterTransaksi
     private lateinit var rvDataProduk: RecyclerView
     private lateinit var tvTotalHarga: TextView
     private lateinit var btnReset: CardView
@@ -66,10 +66,10 @@ class DataTransaksi : AppCompatActivity() {
         rvDataProduk = findViewById(R.id.rvDataProduk)
         rvDataProduk.layoutManager = LinearLayoutManager(this)
         
-        adapter = AdapterTransaction(emptyList())
+        adapter = AdapterTransaksi(emptyList())
         rvDataProduk.adapter = adapter
 
-        adapter.setOnQuantityChangeListener(object : AdapterTransaction.OnQuantityChangeListener {
+        adapter.setOnQuantityChangeListener(object : AdapterTransaksi.OnQuantityChangeListener {
             override fun onQuantityChanged(totalPrice: Int) {
                 updateTotalHarga(totalPrice)
                 // Tampilkan tombol reset jika total harga > 0 (artinya ada produk yang dipilih)

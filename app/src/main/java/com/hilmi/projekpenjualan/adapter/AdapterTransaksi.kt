@@ -11,8 +11,8 @@ import com.hilmi.projekpenjualan.model.ModelProduk
 import java.text.NumberFormat
 import java.util.Locale
 
-class AdapterTransaction(private var produkList: List<ModelProduk>) :
-    RecyclerView.Adapter<AdapterTransaction.TransactionViewHolder>() {
+class AdapterTransaksi(private var produkList: List<ModelProduk>) :
+    RecyclerView.Adapter<AdapterTransaksi.TransactionViewHolder>() {
 
     private val quantities = mutableMapOf<String, Int>()
 

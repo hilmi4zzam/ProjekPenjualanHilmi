@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".kategori.ModKategori">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutPesanSekarang">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pembayaran"
+                android:id="@+id/tvPembayaran"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:fontFamily="@font/alata"
+                android:textStyle="bold"
+                android:textSize="40sp"
+                android:layout_marginTop="80dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/black"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cvKeteranganPembelian"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="30dp"
+                app:boxCornerRadiusBottomEnd="23dp"
+                app:boxCornerRadiusTopStart="23dp"
+                app:boxCornerRadiusBottomStart="23dp"
+                app:boxCornerRadiusTopEnd="23dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="30dp"
+                android:textColorHint="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/tvPembayaran">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kue Lumpur - 5x"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:ignore="MissingConstraints"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/alata"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="60.000"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textSize="20sp"
+                        tools:ignore="MissingConstraints"
+                        android:fontFamily="@font/alata"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:id="@+id/layoutPesanSekarang"
+        android:backgroundTint="#B06710"
+        app:shapeAppearanceOverlay="@style/TopRoundedCard"
+        android:layout_height="90dp"
+        android:layout_marginHorizontal="15dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tvTotalHarga"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="start|center"
+            android:text="Rp60.000"
+            android:layout_marginStart="15dp"
+            android:textSize="25sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/alata"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:id="@+id/btnPesan"
+            android:layout_height="45dp"
+            android:layout_marginEnd="15dp"
+            android:layout_gravity="end|center"
+            app:cardCornerRadius="23dp"
+            android:backgroundTint="#FFB200">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:paddingHorizontal="15dp"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:fontFamily="@font/alata"
+                android:text="Bayar"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
