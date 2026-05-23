@@ -31,6 +31,12 @@ class AdapterTransaction(private var produkList: List<ModelProduk>) :
         notifyDataSetChanged()
     }
 
+    fun resetQuantities() {
+        quantities.clear()
+        notifyDataSetChanged()
+        listener?.onQuantityChanged(0)
+    }
+
     fun getTotalPrice(): Int {
         var total = 0
         for (produk in produkList) {

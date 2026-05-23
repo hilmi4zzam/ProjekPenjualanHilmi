@@ -1,10 +1,12 @@
 package com.hilmi.projekpenjualan.transaksi
 
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +23,7 @@ class DataTransaksi : AppCompatActivity() {
     private lateinit var adapter: AdapterTransaction
     private lateinit var rvDataProduk: RecyclerView
     private lateinit var tvTotalHarga: TextView
+    private lateinit var btnReset: CardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,11 @@ class DataTransaksi : AppCompatActivity() {
         }
 
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
+        btnReset = findViewById(R.id.btnReset)
+        
+        btnReset.setOnClickListener {
+            adapter.resetQuantities()
+        }
         
         initRecyclerView()
         observeViewModel()
@@ -64,6 +72,8 @@ class DataTransaksi : AppCompatActivity() {
         adapter.setOnQuantityChangeListener(object : AdapterTransaction.OnQuantityChangeListener {
             override fun onQuantityChanged(totalPrice: Int) {
                 updateTotalHarga(totalPrice)
+                // Tampilkan tombol reset jika total harga > 0 (artinya ada produk yang dipilih)
+                btnReset.visibility = if (totalPrice > 0) View.VISIBLE else View.GONE
             }
         })
     }
@@ -79,7 +89,9 @@ class DataTransaksi : AppCompatActivity() {
             // Menampilkan produk yang statusnya "Aktif"
             val activeProducts = list.filter { it.statusProduk == "Aktif" }
             adapter.updateData(activeProducts)
-            updateTotalHarga(adapter.getTotalPrice())
+            val totalPrice = adapter.getTotalPrice()
+            updateTotalHarga(totalPrice)
+            btnReset.visibility = if (totalPrice > 0) View.VISIBLE else View.GONE
         }
     }
 }
