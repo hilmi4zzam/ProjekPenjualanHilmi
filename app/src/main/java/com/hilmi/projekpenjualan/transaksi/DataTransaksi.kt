@@ -1,7 +1,7 @@
 package com.hilmi.projekpenjualan.transaksi
 
 import android.os.Bundle
-import android.widget.Toast
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,14 +11,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.adapter.AdapterTransaction
-import com.hilmi.projekpenjualan.model.ModelProduk
 import com.hilmi.projekpenjualan.view_model.DataProdukViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 class DataTransaksi : AppCompatActivity() {
 
     private val viewModel: DataProdukViewModel by viewModels()
     private lateinit var adapter: AdapterTransaction
     private lateinit var rvDataProduk: RecyclerView
+    private lateinit var tvTotalHarga: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,8 @@ class DataTransaksi : AppCompatActivity() {
             insets
         }
 
+        tvTotalHarga = findViewById(R.id.tvTotalHarga)
+        
         initRecyclerView()
         observeViewModel()
         setupSearchView()
@@ -57,12 +61,17 @@ class DataTransaksi : AppCompatActivity() {
         adapter = AdapterTransaction(emptyList())
         rvDataProduk.adapter = adapter
 
-        adapter.setOnItemClickListener(object : AdapterTransaction.OnItemClickListener {
-            override fun onAddClick(produk: ModelProduk) {
-                // Logic for adding product to transaction can be added here
-                Toast.makeText(this@DataTransaksi, "Ditambahkan: ${produk.namaProduk}", Toast.LENGTH_SHORT).show()
+        adapter.setOnQuantityChangeListener(object : AdapterTransaction.OnQuantityChangeListener {
+            override fun onQuantityChanged(totalPrice: Int) {
+                updateTotalHarga(totalPrice)
             }
         })
+    }
+
+    private fun updateTotalHarga(totalPrice: Int) {
+        val localeID = Locale("in", "ID")
+        val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
+        tvTotalHarga.text = formatRupiah.format(totalPrice)
     }
 
     private fun observeViewModel() {
@@ -70,6 +79,7 @@ class DataTransaksi : AppCompatActivity() {
             // Menampilkan produk yang statusnya "Aktif"
             val activeProducts = list.filter { it.statusProduk == "Aktif" }
             adapter.updateData(activeProducts)
+            updateTotalHarga(adapter.getTotalPrice())
         }
     }
 }

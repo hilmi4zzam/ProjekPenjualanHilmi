@@ -14,19 +14,30 @@ import java.util.Locale
 class AdapterTransaction(private var produkList: List<ModelProduk>) :
     RecyclerView.Adapter<AdapterTransaction.TransactionViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onAddClick(produk: ModelProduk)
+    private val quantities = mutableMapOf<String, Int>()
+
+    interface OnQuantityChangeListener {
+        fun onQuantityChanged(totalPrice: Int)
     }
 
-    private var listener: OnItemClickListener? = null
+    private var listener: OnQuantityChangeListener? = null
 
-    fun setOnItemClickListener(listener: OnItemClickListener) {
+    fun setOnQuantityChangeListener(listener: OnQuantityChangeListener) {
         this.listener = listener
     }
 
     fun updateData(newList: List<ModelProduk>) {
         produkList = newList
         notifyDataSetChanged()
+    }
+
+    fun getTotalPrice(): Int {
+        var total = 0
+        for (produk in produkList) {
+            val qty = quantities[produk.idProduk ?: ""] ?: 0
+            total += (produk.hargaProduk ?: 0) * qty
+        }
+        return total
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
@@ -49,6 +60,8 @@ class AdapterTransaction(private var produkList: List<ModelProduk>) :
         private val tvStok: TextView = itemView.findViewById(R.id.tvStokProduk)
         private val tvCabang: TextView = itemView.findViewById(R.id.tvCabangProduk)
         private val btnTambah: View = itemView.findViewById(R.id.btnTambahProduk)
+        private val btnKurang: View = itemView.findViewById(R.id.btnKurangProduk)
+        private val tvJumlah: TextView = itemView.findViewById(R.id.tvJumlahProduk)
 
         fun bind(produk: ModelProduk) {
             tvNama.text = produk.namaProduk
@@ -61,11 +74,25 @@ class AdapterTransaction(private var produkList: List<ModelProduk>) :
             tvStok.text = (produk.stokProduk ?: 0).toString()
             tvCabang.text = produk.idCabang
 
-            // Handle Image if exists, if no Glide/Picasso, we might just use placeholder or implement custom loader
-            // For now, let's keep it simple as I don't see an image loading library.
-            
+            val id = produk.idProduk ?: ""
+            val currentQty = quantities[id] ?: 0
+            tvJumlah.text = currentQty.toString()
+
             btnTambah.setOnClickListener {
-                listener?.onAddClick(produk)
+                val newQty = (quantities[id] ?: 0) + 1
+                quantities[id] = newQty
+                tvJumlah.text = newQty.toString()
+                listener?.onQuantityChanged(getTotalPrice())
+            }
+
+            btnKurang.setOnClickListener {
+                val current = quantities[id] ?: 0
+                if (current > 0) {
+                    val newQty = current - 1
+                    quantities[id] = newQty
+                    tvJumlah.text = newQty.toString()
+                    listener?.onQuantityChanged(getTotalPrice())
+                }
             }
         }
     }
