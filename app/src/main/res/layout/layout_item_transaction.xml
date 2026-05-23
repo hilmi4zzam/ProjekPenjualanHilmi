@@ -23,11 +23,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/ivLogoProduk"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/img_14"/>
-
+                android:src="@drawable/img_14" />
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
@@ -119,19 +119,15 @@
             app:layout_constraintStart_toEndOf="@id/logoCabangProduk"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipAktif"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTambahProduk"
             android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:text="Tambah"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="55dp"
             app:layout_constraintEnd_toEndOf="parent"
+            android:text="Tambah"
+            android:fontFamily="@font/alata"
             android:textSize="20sp"
-            app:chipIcon="@drawable/tambah"
-            app:chipIconSize="10dp"
-            app:chipStrokeWidth="1dp"
-            app:chipStrokeColor="#D0D0D0"
-            app:chipCornerRadius="23dp"/>
+            android:backgroundTint="#FFB200"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
