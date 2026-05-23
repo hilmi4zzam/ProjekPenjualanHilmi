@@ -119,15 +119,49 @@
             app:layout_constraintStart_toEndOf="@id/logoCabangProduk"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnTambahProduk"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="55dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="Tambah"
-            android:fontFamily="@font/alata"
+            android:id="@+id/btnTambahProduk"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/logoitemproduk"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/img_15"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:text="0"
+            android:id="@+id/tvJumlahProduk"
             android:textSize="20sp"
-            android:backgroundTint="#FFB200"/>
+            android:gravity="center"
+            android:textAlignment="center"
+            android:layout_marginBottom="7dp"
+            android:fontFamily="@font/alata"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/logoitemproduk"
+            app:layout_constraintEnd_toStartOf="@id/btnTambahProduk"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:id="@+id/btnKurangProduk"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/logoitemproduk"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/tvJumlahProduk">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/img_16"/>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
