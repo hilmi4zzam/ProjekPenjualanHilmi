@@ -84,21 +84,22 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModCabangSimpan"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:text="Simpan"
-            android:backgroundTint="#fec901"
-            android:textColor="@color/black"
-            android:id="@+id/btnModCabangSimpan"
-            app:layout_constraintTop_toBottomOf="@id/tilModCabangStatus"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginEnd="30dp"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="30dp"
-            app:cornerRadius="23dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="30dp"
+            android:backgroundTint="#FFB200"
             android:fontFamily="@font/alata"
-            android:textSize="20sp"/>
+            android:text="Simpan"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:cornerRadius="23dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilModCabangStatus" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
