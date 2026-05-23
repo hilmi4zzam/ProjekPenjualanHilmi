@@ -37,6 +37,24 @@ class AdapterTransaksi(private var produkList: List<ModelProduk>) :
         listener?.onQuantityChanged(0)
     }
 
+    fun getSelectedItems(): List<com.hilmi.projekpenjualan.model.CartItem> {
+        val selected = mutableListOf<com.hilmi.projekpenjualan.model.CartItem>()
+        for (produk in produkList) {
+            val qty = quantities[produk.idProduk ?: ""] ?: 0
+            if (qty > 0) {
+                selected.add(
+                    com.hilmi.projekpenjualan.model.CartItem(
+                        produk.idProduk,
+                        produk.namaProduk,
+                        produk.hargaProduk,
+                        qty
+                    )
+                )
+            }
+        }
+        return selected
+    }
+
     fun getTotalPrice(): Int {
         var total = 0
         for (produk in produkList) {

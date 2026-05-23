@@ -1,5 +1,6 @@
 package com.hilmi.projekpenjualan.transaksi
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -24,6 +25,7 @@ class DataTransaksi : AppCompatActivity() {
     private lateinit var rvDataProduk: RecyclerView
     private lateinit var tvTotalHarga: TextView
     private lateinit var btnReset: CardView
+    private lateinit var btnPesan: CardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +40,20 @@ class DataTransaksi : AppCompatActivity() {
 
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
         btnReset = findViewById(R.id.btnReset)
+        btnPesan = findViewById(R.id.btnPesan)
         
         btnReset.setOnClickListener {
             adapter.resetQuantities()
+        }
+
+        btnPesan.setOnClickListener {
+            val selectedItems = ArrayList(adapter.getSelectedItems())
+            if (selectedItems.isNotEmpty()) {
+                val intent = Intent(this, ModTransaksi::class.java)
+                intent.putParcelableArrayListExtra("SELECTED_ITEMS", selectedItems)
+                intent.putExtra("TOTAL_PRICE", adapter.getTotalPrice())
+                startActivity(intent)
+            }
         }
         
         initRecyclerView()

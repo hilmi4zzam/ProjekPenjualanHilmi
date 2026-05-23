@@ -47,30 +47,68 @@
                 android:textColorHint="@color/black"
                 app:layout_constraintTop_toBottomOf="@id/tvPembayaran">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
+                    android:id="@+id/llItemSummary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp">
+                    android:layout_margin="15dp"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kue Lumpur - 5x"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:ignore="MissingConstraints"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/alata"/>
+                    <!-- Items will be added here dynamically -->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="60.000"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:textSize="20sp"
-                        tools:ignore="MissingConstraints"
-                        android:fontFamily="@font/alata"/>
+                </LinearLayout>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rbQris"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="30dp"
+                app:boxCornerRadiusBottomEnd="23dp"
+                app:boxCornerRadiusTopStart="23dp"
+                app:boxCornerRadiusBottomStart="23dp"
+                app:boxCornerRadiusTopEnd="23dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="30dp"
+                android:textColorHint="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/cvKeteranganPembelian">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:layout_width="match_parent"
+                    android:layout_margin="15dp"
+                    android:layout_height="wrap_content"
+                    android:text="QRIS"
+                    android:fontFamily="@font/alata"
+                    android:textSize="20sp"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rbTunai"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="30dp"
+                app:boxCornerRadiusBottomEnd="23dp"
+                app:boxCornerRadiusTopStart="23dp"
+                app:boxCornerRadiusBottomStart="23dp"
+                app:boxCornerRadiusTopEnd="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:textColorHint="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/rbQris">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:layout_width="match_parent"
+                    android:layout_margin="15dp"
+                    android:layout_height="wrap_content"
+                    android:text="Tunai"
+                    android:fontFamily="@font/alata"
+                    android:textSize="20sp"/>
 
             </com.google.android.material.card.MaterialCardView>
 
