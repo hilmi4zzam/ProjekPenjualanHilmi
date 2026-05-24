@@ -15,6 +15,12 @@
             android:name=".laporan.DetailLaporan"
             android:exported="false" />
         <activity
+            android:name=".pegawai.DataPegawai"
+            android:exported="false" />
+        <activity
+            android:name=".pegawai.ModPegawai"
+            android:exported="false" />
+        <activity
             android:name=".laporan.DataLaporanPenjualan"
             android:exported="false" />
         <activity
