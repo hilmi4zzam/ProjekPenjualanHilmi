@@ -73,14 +73,16 @@ class DataCabang : AppCompatActivity() {
     }
 
     private fun showDeleteDialog(cabang: ModelCabang) {
-        MaterialAlertDialogBuilder(this, R.style.WhiteMaterialAlertDialog)
-            .setTitle("Hapus Cabang")
-            .setMessage("Apakah Anda yakin ingin menghapus ${cabang.namaCabang}?")
-            .setPositiveButton("Hapus") { _, _ ->
-                viewModel.deleteCabang(cabang.idCabang)
-                Toast.makeText(this, "${cabang.namaCabang} berhasil dihapus", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("Batal", null)
-            .show()
+        val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
+        builder.setTitle("Hapus Cabang")
+        builder.setMessage("Apakah Anda yakin ingin menghapus ${cabang.namaCabang}?")
+        builder.setPositiveButton("Hapus") { _, _ ->
+            viewModel.deleteCabang(cabang.idCabang)
+            Toast.makeText(this, "${cabang.namaCabang} berhasil dihapus", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 }

@@ -78,15 +78,17 @@ class DataProduk : AppCompatActivity() {
     }
 
     private fun showDeleteDialog(produk: ModelProduk) {
-        MaterialAlertDialogBuilder(this, R.style.WhiteMaterialAlertDialog)
-            .setTitle("Hapus Produk")
-            .setMessage("Apakah Anda yakin ingin menghapus ${produk.namaProduk}?")
-            .setPositiveButton("Hapus") { _, _ ->
-                viewModel.deleteProduk(produk.idProduk)
-                Toast.makeText(this, "${produk.namaProduk} berhasil dihapus", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("Batal", null)
-            .show()
+        val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
+        builder.setTitle("Hapus Produk")
+        builder.setMessage("Apakah Anda yakin ingin menghapus ${produk.namaProduk}?")
+        builder.setPositiveButton("Hapus") { _, _ ->
+            viewModel.deleteProduk(produk.idProduk)
+            Toast.makeText(this, "${produk.namaProduk} berhasil dihapus", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 
     fun init (){

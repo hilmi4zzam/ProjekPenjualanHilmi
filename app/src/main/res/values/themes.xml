@@ -19,4 +19,13 @@
         <item name="colorSurface">@android:color/white</item>
     </style>
 
+    <style name="RoundedAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/RoundedDialogShape</item>
+    </style>
+
+    <style name="RoundedDialogShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">23dp</item>
+    </style>
+
 </resources>

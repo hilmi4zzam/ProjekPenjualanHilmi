@@ -86,17 +86,17 @@ class DataKategori : AppCompatActivity() {
     }
 
     private fun showDeleteDialog(kategori: ModelKategori) {
-        MaterialAlertDialogBuilder(this, R.style.WhiteMaterialAlertDialog)
-            .setTitle("Hapus Kategori")
-            .setMessage("\nApakah Anda yakin ingin menghapus kategori ${kategori.namaKategori}?")
-            .setPositiveButton("Hapus") { _, _ ->
-                viewModel.deleteKategori(kategori.idKategori)
-                Toast.makeText(this, "${kategori.namaKategori} berhasil dihapus", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("Batal") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+        val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
+        builder.setTitle("Hapus Kategori")
+        builder.setMessage("\nApakah Anda yakin ingin menghapus kategori ${kategori.namaKategori}?")
+        builder.setPositiveButton("Hapus") { _, _ ->
+            viewModel.deleteKategori(kategori.idKategori)
+            Toast.makeText(this, "${kategori.namaKategori} berhasil dihapus", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 
     private fun showKategoriDetail(kategori: ModelKategori) {

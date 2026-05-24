@@ -10,7 +10,7 @@
         android:id="@+id/tilNomorWA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nomor WhatsApp (Contoh: 08123...)"
+        android:hint="Nomor WhatsApp (Diawali angka 08)"
         app:boxCornerRadiusBottomEnd="15dp"
         app:boxCornerRadiusBottomStart="15dp"
         app:boxCornerRadiusTopEnd="15dp"

@@ -9,12 +9,12 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hilmi.projekpenjualan.R
@@ -106,7 +106,7 @@ class ModTransaksi : AppCompatActivity() {
 
     private fun showQrisPopup() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_popup_qris, null)
-        val dialog = AlertDialog.Builder(this)
+        val dialog = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
             .setView(dialogView)
             .create()
 

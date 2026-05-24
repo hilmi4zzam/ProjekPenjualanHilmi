@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -118,7 +119,7 @@ class Nota : AppCompatActivity() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_input_nomor, null)
         val etNomor = dialogView.findViewById<TextInputEditText>(R.id.etNomorWA)
 
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
         builder.setTitle("Bagikan ke WhatsApp")
         builder.setView(dialogView)
         builder.setPositiveButton("Kirim") { dialog, _ ->
