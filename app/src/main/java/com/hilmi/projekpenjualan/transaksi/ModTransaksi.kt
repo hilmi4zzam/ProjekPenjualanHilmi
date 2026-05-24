@@ -1,5 +1,6 @@
 package com.hilmi.projekpenjualan.transaksi
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ class ModTransaksi : AppCompatActivity() {
     private lateinit var rbTunaiButton: RadioButton
     private lateinit var btnPesan: CardView
     private var totalPrice: Int = 0
+    private var selectedItems: ArrayList<CartItem>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +47,7 @@ class ModTransaksi : AppCompatActivity() {
         rbTunaiButton = findViewById(R.id.rbTunaiButton)
         btnPesan = findViewById(R.id.btnPesan)
 
-        val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
+        selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
         totalPrice = intent.getIntExtra("TOTAL_PRICE", 0)
 
         displayItems(selectedItems)
@@ -78,7 +80,7 @@ class ModTransaksi : AppCompatActivity() {
             when {
                 rbQrisButton.isChecked -> showQrisPopup()
                 rbTunaiButton.isChecked -> {
-                    Toast.makeText(this, "Pembayaran Tunai Dipilih", Toast.LENGTH_SHORT).show()
+                    navigateToNota()
                 }
                 else -> {
                     Toast.makeText(this, "Silakan pilih metode pembayaran", Toast.LENGTH_SHORT).show()
@@ -93,7 +95,6 @@ class ModTransaksi : AppCompatActivity() {
             .setView(dialogView)
             .create()
 
-        // Make background transparent so card corners are visible
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         val tvTotalHargaQris = dialogView.findViewById<TextView>(R.id.tvTotalHargaQris)
@@ -105,11 +106,18 @@ class ModTransaksi : AppCompatActivity() {
 
         btnLanjutkan.setOnClickListener {
             dialog.dismiss()
-            Toast.makeText(this, "Pembayaran Berhasil", Toast.LENGTH_SHORT).show()
-            finish()
+            navigateToNota()
         }
 
         dialog.show()
+    }
+
+    private fun navigateToNota() {
+        val intent = Intent(this, Nota::class.java)
+        intent.putParcelableArrayListExtra("SELECTED_ITEMS", selectedItems)
+        intent.putExtra("TOTAL_PRICE", totalPrice)
+        startActivity(intent)
+        finish()
     }
 
     private fun displayItems(items: ArrayList<CartItem>?) {
