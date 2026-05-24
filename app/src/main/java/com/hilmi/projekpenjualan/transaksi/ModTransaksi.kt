@@ -15,6 +15,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.CartItem
 import java.text.NumberFormat
@@ -26,6 +28,8 @@ class ModTransaksi : AppCompatActivity() {
     private lateinit var tvTotalHarga: TextView
     private lateinit var rbQrisButton: RadioButton
     private lateinit var rbTunaiButton: RadioButton
+    private lateinit var tilNamaPemesan: TextInputLayout
+    private lateinit var tietNamaPemesan: TextInputEditText
     private lateinit var btnPesan: CardView
     private var totalPrice: Int = 0
     private var selectedItems: ArrayList<CartItem>? = null
@@ -45,6 +49,8 @@ class ModTransaksi : AppCompatActivity() {
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
         rbQrisButton = findViewById(R.id.rbQrisButton)
         rbTunaiButton = findViewById(R.id.rbTunaiButton)
+        tilNamaPemesan = findViewById(R.id.tilModKategoriNama)
+        tietNamaPemesan = findViewById(R.id.tietNamaKategori)
         btnPesan = findViewById(R.id.btnPesan)
 
         selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
@@ -77,6 +83,15 @@ class ModTransaksi : AppCompatActivity() {
 
     private fun setupBayarButton() {
         btnPesan.setOnClickListener {
+            val nama = tietNamaPemesan.text.toString().trim()
+            if (nama.isEmpty()) {
+                tilNamaPemesan.error = "Nama pemesan wajib diisi"
+                tietNamaPemesan.requestFocus()
+                return@setOnClickListener
+            } else {
+                tilNamaPemesan.error = null
+            }
+
             when {
                 rbQrisButton.isChecked -> showQrisPopup()
                 rbTunaiButton.isChecked -> {
@@ -116,6 +131,7 @@ class ModTransaksi : AppCompatActivity() {
         val intent = Intent(this, Nota::class.java)
         intent.putParcelableArrayListExtra("SELECTED_ITEMS", selectedItems)
         intent.putExtra("TOTAL_PRICE", totalPrice)
+        intent.putExtra("NAMA_PEMESAN", tietNamaPemesan.text.toString().trim())
         startActivity(intent)
         finish()
     }

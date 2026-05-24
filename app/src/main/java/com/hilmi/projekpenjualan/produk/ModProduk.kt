@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -23,6 +24,13 @@ import com.hilmi.projekpenjualan.model.ModelProduk
 class ModProduk : AppCompatActivity() {
 
     private lateinit var tvTitle: TextView
+    private lateinit var tilNama: TextInputLayout
+    private lateinit var tilHarga: TextInputLayout
+    private lateinit var tilKategori: TextInputLayout
+    private lateinit var tilStok: TextInputLayout
+    private lateinit var tilCabang: TextInputLayout
+    private lateinit var tilStatus: TextInputLayout
+    
     private lateinit var etNama: TextInputEditText
     private lateinit var etHarga: TextInputEditText
     private lateinit var etStok: TextInputEditText
@@ -77,24 +85,36 @@ class ModProduk : AppCompatActivity() {
             val cabang = spCabang.text.toString()
             val status = spStatus.text.toString()
 
+            // Reset Errors
+            tilNama.error = null
+            tilHarga.error = null
+            tilStok.error = null
+            tilKategori.error = null
+            tilCabang.error = null
+
             if (nama.isEmpty()) {
-                etNama.error = "Nama produk wajib diisi"
+                tilNama.error = "Nama produk wajib diisi"
+                etNama.requestFocus()
                 return@setOnClickListener
             }
             if (harga.isEmpty()) {
-                etHarga.error = "Harga wajib diisi"
+                tilHarga.error = "Harga wajib diisi"
+                etHarga.requestFocus()
                 return@setOnClickListener
             }
             if (stok.isEmpty()) {
-                etStok.error = "Jumlah stok wajib diisi"
+                tilStok.error = "Jumlah stok wajib diisi"
+                etStok.requestFocus()
                 return@setOnClickListener
             }
             if (kategori.isEmpty()) {
-                spKategori.error = "Kategori wajib diisi"
+                tilKategori.error = "Kategori wajib diisi"
+                spKategori.requestFocus()
                 return@setOnClickListener
             }
             if (cabang.isEmpty()) {
-                spCabang.error = "Cabang wajib diisi"
+                tilCabang.error = "Cabang wajib diisi"
+                spCabang.requestFocus()
                 return@setOnClickListener
             }
 
@@ -174,6 +194,14 @@ class ModProduk : AppCompatActivity() {
 
     private fun init() {
         tvTitle = findViewById(R.id.tvTambahProduk)
+        
+        tilNama = findViewById(R.id.tilModProdukNama)
+        tilHarga = findViewById(R.id.tilModProdukHarga)
+        tilKategori = findViewById(R.id.tilModKategoriProduk)
+        tilStok = findViewById(R.id.tilModProdukStok)
+        tilCabang = findViewById(R.id.tilModCabangProduk)
+        tilStatus = findViewById(R.id.tilModStatusProduk)
+
         etNama = findViewById(R.id.tietNamaProduk)
         etHarga = findViewById(R.id.tietHargaProduk)
         etStok = findViewById(R.id.tietStokProduk)

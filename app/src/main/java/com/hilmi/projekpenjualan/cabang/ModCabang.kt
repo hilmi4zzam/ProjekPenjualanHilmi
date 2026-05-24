@@ -10,12 +10,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.FirebaseDatabase
 import com.hilmi.projekpenjualan.R
 
 class ModCabang : AppCompatActivity() {
 
+    private lateinit var tilNama: TextInputLayout
     private lateinit var etNama: TextInputEditText
+    private lateinit var tilStatus: TextInputLayout
     private lateinit var spStatus: AutoCompleteTextView
     private lateinit var btnSimpan: MaterialButton
 
@@ -39,8 +42,11 @@ class ModCabang : AppCompatActivity() {
             val nama = etNama.text.toString().trim()
             val status = spStatus.text.toString()
 
+            tilNama.error = null
+
             if (nama.isEmpty()) {
-                etNama.error = "Nama cabang wajib diisi"
+                tilNama.error = "Nama cabang wajib diisi"
+                etNama.requestFocus()
                 return@setOnClickListener
             }
 
@@ -69,7 +75,9 @@ class ModCabang : AppCompatActivity() {
     }
 
     private fun init() {
+        tilNama = findViewById(R.id.tilModCabangNama)
         etNama = findViewById(R.id.tietNamaCabang)
+        tilStatus = findViewById(R.id.tilModCabangStatus)
         spStatus = findViewById(R.id.spModCabangStatus)
         btnSimpan = findViewById(R.id.btnModCabangSimpan)
     }

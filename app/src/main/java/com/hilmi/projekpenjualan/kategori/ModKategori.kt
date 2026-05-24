@@ -20,8 +20,9 @@ class ModKategori : AppCompatActivity() {
     val myRef = database.getReference("kategori")
 
     private lateinit var tvJudul : TextView
+    private lateinit var tilNamaKategori : TextInputLayout
     private lateinit var etNamaKategori : TextInputEditText
-    private lateinit var tvStatusKategori : TextInputLayout
+    private lateinit var tilStatusKategori : TextInputLayout
     private lateinit var spStatusKategori : AutoCompleteTextView
     private lateinit var btSimpan : MaterialButton
 
@@ -38,8 +39,9 @@ class ModKategori : AppCompatActivity() {
         }
 
         tvJudul = findViewById(R.id.tvTambahKategori)
+        tilNamaKategori = findViewById(R.id.tilModKategoriNama)
         etNamaKategori = findViewById(R.id.tietNamaKategori)
-        tvStatusKategori = findViewById(R.id.tilModKategoriStatus)
+        tilStatusKategori = findViewById(R.id.tilModKategoriStatus)
         spStatusKategori = findViewById(R.id.spModKategoriStatus)
         btSimpan = findViewById(R.id.btnModKategoriSimpan)
 
@@ -52,8 +54,11 @@ class ModKategori : AppCompatActivity() {
             val nama = etNamaKategori.text.toString().trim()
             val status = spStatusKategori.text.toString()
 
+            tilNamaKategori.error = null
+
             if (nama.isEmpty()) {
-                etNamaKategori.error = "Nama kategori wajib diisi"
+                tilNamaKategori.error = "Nama kategori wajib diisi"
+                etNamaKategori.requestFocus()
                 return@setOnClickListener
             }
             val key = myRef.push().key

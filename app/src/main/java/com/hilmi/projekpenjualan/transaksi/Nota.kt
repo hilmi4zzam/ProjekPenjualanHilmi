@@ -31,6 +31,7 @@ class Nota : AppCompatActivity() {
 
     private lateinit var llItemSummary: LinearLayout
     private lateinit var tvTotalHarga: TextView
+    private lateinit var tvNamaPemesan: TextView
     private lateinit var cvNota: MaterialCardView
     private lateinit var btnCetak: MaterialButton
     private lateinit var btnSelesai: MaterialButton
@@ -49,15 +50,18 @@ class Nota : AppCompatActivity() {
 
         llItemSummary = findViewById(R.id.llItemSummary)
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
+        tvNamaPemesan = findViewById(R.id.tvNama)
         cvNota = findViewById(R.id.cvNota)
         btnCetak = findViewById(R.id.btnCetak)
         btnSelesai = findViewById(R.id.btnSelesai)
 
         val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
         val totalPrice = intent.getIntExtra("TOTAL_PRICE", 0)
+        val namaPemesan = intent.getStringExtra("NAMA_PEMESAN")
 
         displayItems(selectedItems)
         displayTotalPrice(totalPrice)
+        tvNamaPemesan.text = namaPemesan
 
         btnSelesai.setOnClickListener {
             updateStockInFirebase(selectedItems)
