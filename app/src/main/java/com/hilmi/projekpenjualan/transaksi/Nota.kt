@@ -1,11 +1,13 @@
 package com.hilmi.projekpenjualan.transaksi
 
+import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
+import android.print.PrintAttributes
+import android.print.PrintManager
 import android.view.LayoutInflater
-import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -13,9 +15,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.print.PrintHelper
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -32,8 +34,8 @@ class Nota : AppCompatActivity() {
     private lateinit var llItemSummary: LinearLayout
     private lateinit var tvTotalHarga: TextView
     private lateinit var tvNamaPemesan: TextView
-    private lateinit var cvNota: MaterialCardView
     private lateinit var btnCetak: MaterialButton
+    private lateinit var btnBagikan: MaterialButton
     private lateinit var btnSelesai: MaterialButton
     private var isStockUpdated = false
 
@@ -51,8 +53,8 @@ class Nota : AppCompatActivity() {
         llItemSummary = findViewById(R.id.llItemSummary)
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
         tvNamaPemesan = findViewById(R.id.tvNama)
-        cvNota = findViewById(R.id.cvNota)
         btnCetak = findViewById(R.id.btnCetak)
+        btnBagikan = findViewById(R.id.btnBagikan)
         btnSelesai = findViewById(R.id.btnSelesai)
 
         val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
@@ -75,6 +77,112 @@ class Nota : AppCompatActivity() {
             updateStockInFirebase(selectedItems)
             cetakNota()
         }
+
+        btnBagikan.setOnClickListener {
+            showShareDialog()
+        }
+    }
+
+    private fun generateReceiptText(): String {
+        val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
+        val totalPrice = intent.getIntExtra("TOTAL_PRICE", 0)
+        val namaPemesan = intent.getStringExtra("NAMA_PEMESAN")
+
+        val localeID = Locale("in", "ID")
+        val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
+        
+        val sb = StringBuilder()
+        sb.append("==============================\n")
+        sb.append("        HILMI STORE        \n")
+        sb.append("==============================\n")
+        sb.append("Nama: ${namaPemesan ?: "-"}\n")
+        sb.append("------------------------------\n")
+        
+        selectedItems?.forEach { item ->
+            val pricePerItem = item.hargaProduk ?: 0
+            val totalItemPrice = pricePerItem * (item.jumlah ?: 0)
+            sb.append("${item.namaProduk}\n")
+            sb.append("${item.jumlah} x ${formatRupiah.format(pricePerItem)} = ${formatRupiah.format(totalItemPrice)}\n")
+        }
+        
+        sb.append("------------------------------\n")
+        sb.append("TOTAL: ${formatRupiah.format(totalPrice)}\n")
+        sb.append("==============================\n")
+        sb.append("Terima kasih atas kunjungannya!\n")
+        sb.append("==============================\n")
+        
+        return sb.toString()
+    }
+
+    private fun showShareDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_input_nomor, null)
+        val etNomor = dialogView.findViewById<TextInputEditText>(R.id.etNomorWA)
+
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setTitle("Bagikan ke WhatsApp")
+        builder.setView(dialogView)
+        builder.setPositiveButton("Kirim") { dialog, _ ->
+            val nomor = etNomor.text.toString().trim()
+            if (nomor.isNotEmpty()) {
+                shareToWhatsApp(nomor)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(this, "Nomor tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            }
+        }
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+    private fun shareToWhatsApp(nomor: String) {
+        var formattedNomor = nomor
+        if (formattedNomor.startsWith("0")) {
+            formattedNomor = "62" + formattedNomor.substring(1)
+        } else if (!formattedNomor.startsWith("62")) {
+            formattedNomor = "62" + formattedNomor
+        }
+
+        val receiptText = generateReceiptText()
+        
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, receiptText)
+        intent.putExtra("jid", "$formattedNomor@s.whatsapp.net")
+        intent.`package` = "com.whatsapp"
+
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            // Fallback for direct URL if needed
+            try {
+                val url = "https://api.whatsapp.com/send?phone=$formattedNomor&text=${java.net.URLEncoder.encode(receiptText, "UTF-8")}"
+                val i = Intent(Intent.ACTION_VIEW)
+                i.data = android.net.Uri.parse(url)
+                startActivity(i)
+            } catch (ex: Exception) {
+                Toast.makeText(this, "WhatsApp tidak terinstal", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun cetakNota() {
+        val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
+        val jobName = "${getString(R.string.app_name)} Document"
+        
+        val receiptText = generateReceiptText().replace("\n", "<br>")
+        val htmlContent = "<html><body><pre style='font-family: monospace; font-size: 10pt;'>$receiptText</pre></body></html>"
+        
+        val webView = WebView(this)
+        webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
+        
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                val printAdapter = webView.createPrintDocumentAdapter(jobName)
+                printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
+            }
+        }
     }
 
     private fun updateStockInFirebase(items: ArrayList<CartItem>?) {
@@ -90,16 +198,12 @@ class Nota : AppCompatActivity() {
             productsRef.child(idProduk).runTransaction(object : Transaction.Handler {
                 override fun doTransaction(currentData: MutableData): Transaction.Result {
                     val product = currentData.getValue(ModelProduk::class.java) ?: return Transaction.success(currentData)
-
                     val currentStock = product.stokProduk ?: 0
                     val newStock = (currentStock - quantityToSubtract).coerceAtLeast(0)
-
                     currentData.child("stokProduk").value = newStock
-
                     if (newStock == 0) {
                         currentData.child("statusProduk").value = "Nonaktif"
                     }
-
                     return Transaction.success(currentData)
                 }
 
@@ -140,19 +244,5 @@ class Nota : AppCompatActivity() {
         val localeID = Locale("in", "ID")
         val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
         tvTotalHarga.text = formatRupiah.format(total)
-    }
-
-    private fun cetakNota() {
-        val bitmap = createBitmapFromView(cvNota)
-        val printHelper = PrintHelper(this)
-        printHelper.scaleMode = PrintHelper.SCALE_MODE_FIT
-        printHelper.printBitmap("Nota Belanja", bitmap)
-    }
-
-    private fun createBitmapFromView(view: View): Bitmap {
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        return bitmap
     }
 }
