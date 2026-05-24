@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
+import com.google.firebase.database.FirebaseDatabase
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.ModelLaporan
 import java.text.NumberFormat
@@ -44,9 +45,6 @@ class AdapterLaporan(private var laporanList: List<ModelLaporan>) :
         private val tvNama: TextView = itemView.findViewById(R.id.tvItemProduk)
         private val tvHarga: TextView = itemView.findViewById(R.id.tvHargaProduk)
         private val chipStatus: Chip = itemView.findViewById(R.id.chipAktif)
-        
-        // Local state for status since user said "tidak perlu dimasukkan ke firebase"
-        private var isSelesai = false
 
         fun bind(laporan: ModelLaporan) {
             tvNama.text = laporan.namaPemesan ?: "-"
@@ -55,11 +53,12 @@ class AdapterLaporan(private var laporanList: List<ModelLaporan>) :
             val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
             tvHarga.text = formatRupiah.format(laporan.totalHarga ?: 0)
 
-            updateChipUI()
+            val currentStatus = laporan.status ?: "Dikerjakan"
+            updateChipUI(currentStatus)
 
             chipStatus.setOnClickListener {
-                isSelesai = !isSelesai
-                updateChipUI()
+                val newStatus = if (currentStatus == "Dikerjakan") "Selesai" else "Dikerjakan"
+                updateStatusInFirebase(laporan.idLaporan, newStatus)
             }
 
             itemView.setOnClickListener {
@@ -67,14 +66,20 @@ class AdapterLaporan(private var laporanList: List<ModelLaporan>) :
             }
         }
 
-        private fun updateChipUI() {
-            if (isSelesai) {
-                chipStatus.text = "Selesai"
+        private fun updateChipUI(status: String) {
+            chipStatus.text = status
+            if (status == "Selesai") {
                 chipStatus.setChipIconResource(R.drawable.lingkaran_online)
             } else {
                 chipStatus.text = "Dikerjakan"
                 chipStatus.setChipIconResource(R.drawable.lingkaran_dikerjakan)
             }
+        }
+
+        private fun updateStatusInFirebase(idLaporan: String?, newStatus: String) {
+            if (idLaporan == null) return
+            val ref = FirebaseDatabase.getInstance().getReference("laporan").child(idLaporan)
+            ref.child("status").setValue(newStatus)
         }
     }
 }
