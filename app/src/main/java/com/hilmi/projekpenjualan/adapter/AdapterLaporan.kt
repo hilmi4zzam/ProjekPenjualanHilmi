@@ -14,6 +14,16 @@ import java.util.Locale
 class AdapterLaporan(private var laporanList: List<ModelLaporan>) :
     RecyclerView.Adapter<AdapterLaporan.LaporanViewHolder>() {
 
+    interface OnItemClickListener {
+        fun onItemClick(laporan: ModelLaporan)
+    }
+
+    private var listener: OnItemClickListener? = null
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
+
     fun updateData(newList: List<ModelLaporan>) {
         laporanList = newList
         notifyDataSetChanged()
@@ -50,6 +60,10 @@ class AdapterLaporan(private var laporanList: List<ModelLaporan>) :
             chipStatus.setOnClickListener {
                 isSelesai = !isSelesai
                 updateChipUI()
+            }
+
+            itemView.setOnClickListener {
+                listener?.onItemClick(laporan)
             }
         }
 

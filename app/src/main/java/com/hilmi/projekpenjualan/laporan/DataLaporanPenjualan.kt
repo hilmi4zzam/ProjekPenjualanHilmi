@@ -10,7 +10,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hilmi.projekpenjualan.R
+import android.content.Intent
 import com.hilmi.projekpenjualan.adapter.AdapterLaporan
+import com.hilmi.projekpenjualan.model.ModelLaporan
 import com.hilmi.projekpenjualan.view_model.DataLaporanViewModel
 
 class DataLaporanPenjualan : AppCompatActivity() {
@@ -43,6 +45,14 @@ class DataLaporanPenjualan : AppCompatActivity() {
         }
         adapter = AdapterLaporan(emptyList())
         rvLaporan.adapter = adapter
+
+        adapter.setOnItemClickListener(object : AdapterLaporan.OnItemClickListener {
+            override fun onItemClick(laporan: ModelLaporan) {
+                val intent = Intent(this@DataLaporanPenjualan, DetailLaporan::class.java)
+                intent.putExtra("LAPORAN", laporan)
+                startActivity(intent)
+            }
+        })
     }
 
     private fun setupSearchView() {

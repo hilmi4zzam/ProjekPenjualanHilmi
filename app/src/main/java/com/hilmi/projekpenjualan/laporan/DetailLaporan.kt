@@ -1,4 +1,4 @@
-package com.hilmi.projekpenjualan.transaksi
+package com.hilmi.projekpenjualan.laporan
 
 import android.content.Context
 import android.content.Intent
@@ -16,22 +16,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.MutableData
-import com.google.firebase.database.Transaction
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.CartItem
 import com.hilmi.projekpenjualan.model.ModelLaporan
-import com.hilmi.projekpenjualan.model.ModelProduk
 import java.text.NumberFormat
 import java.util.Locale
 
-class Nota : AppCompatActivity() {
+class DetailLaporan : AppCompatActivity() {
 
     private lateinit var llItemSummary: LinearLayout
     private lateinit var tvTotalHarga: TextView
@@ -39,8 +31,7 @@ class Nota : AppCompatActivity() {
     private lateinit var btnCetak: MaterialButton
     private lateinit var btnBagikan: MaterialButton
     private lateinit var btnSelesai: MaterialButton
-    private var isStockUpdated = false
-    private var isLaporanSaved = false
+    private var selectedLaporan: ModelLaporan? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +44,8 @@ class Nota : AppCompatActivity() {
             insets
         }
 
+        findViewById<TextView>(R.id.tvPembayaranBerhasil).text = "Detail Transaksi"
+
         llItemSummary = findViewById(R.id.llItemSummary)
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
         tvNamaPemesan = findViewById(R.id.tvNama)
@@ -60,26 +53,20 @@ class Nota : AppCompatActivity() {
         btnBagikan = findViewById(R.id.btnBagikan)
         btnSelesai = findViewById(R.id.btnSelesai)
 
-        val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
-        val totalPrice = intent.getIntExtra("TOTAL_PRICE", 0)
-        val namaPemesan = intent.getStringExtra("NAMA_PEMESAN")
+        selectedLaporan = intent.getParcelableExtra("LAPORAN")
+        
+        if (selectedLaporan != null) {
+            tvNamaPemesan.text = selectedLaporan?.namaPemesan
+            displayTotalPrice(selectedLaporan?.totalHarga ?: 0)
+            displayItems(selectedLaporan?.items as? ArrayList<CartItem>)
+        }
 
-        displayItems(selectedItems)
-        displayTotalPrice(totalPrice)
-        tvNamaPemesan.text = namaPemesan
-
+        btnSelesai.text = "Kembali"
         btnSelesai.setOnClickListener {
-            updateStockInFirebase(selectedItems)
-            saveToLaporan(namaPemesan, totalPrice, selectedItems)
-            val intent = Intent(this, DataTransaksi::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
             finish()
         }
 
         btnCetak.setOnClickListener {
-            updateStockInFirebase(selectedItems)
-            saveToLaporan(namaPemesan, totalPrice, selectedItems)
             cetakNota()
         }
 
@@ -88,33 +75,7 @@ class Nota : AppCompatActivity() {
         }
     }
 
-    private fun saveToLaporan(namaPemesan: String?, totalHarga: Int, items: ArrayList<CartItem>?) {
-        if (isLaporanSaved) return
-        
-        val database = FirebaseDatabase.getInstance()
-        val laporanRef = database.getReference("laporan")
-        val key = laporanRef.push().key
-        
-        if (key != null) {
-            val laporanData = ModelLaporan(
-                idLaporan = key,
-                namaPemesan = namaPemesan,
-                totalHarga = totalHarga,
-                timestamp = System.currentTimeMillis(),
-                items = items
-            )
-            
-            laporanRef.child(key).setValue(laporanData).addOnSuccessListener {
-                isLaporanSaved = true
-            }
-        }
-    }
-
     private fun generateReceiptText(): String {
-        val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
-        val totalPrice = intent.getIntExtra("TOTAL_PRICE", 0)
-        val namaPemesan = intent.getStringExtra("NAMA_PEMESAN")
-
         val localeID = Locale("in", "ID")
         val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
         
@@ -122,10 +83,10 @@ class Nota : AppCompatActivity() {
         sb.append("==============================\n")
         sb.append("        HILMI STORE        \n")
         sb.append("==============================\n")
-        sb.append("Nama: ${namaPemesan ?: "-"}\n")
+        sb.append("Nama: ${selectedLaporan?.namaPemesan ?: "-"}\n")
         sb.append("------------------------------\n")
         
-        selectedItems?.forEach { item ->
+        selectedLaporan?.items?.forEach { item ->
             val pricePerItem = item.hargaProduk ?: 0
             val totalItemPrice = pricePerItem * (item.jumlah ?: 0)
             sb.append("${item.namaProduk}\n")
@@ -133,7 +94,7 @@ class Nota : AppCompatActivity() {
         }
         
         sb.append("------------------------------\n")
-        sb.append("TOTAL: ${formatRupiah.format(totalPrice)}\n")
+        sb.append("TOTAL: ${formatRupiah.format(selectedLaporan?.totalHarga ?: 0)}\n")
         sb.append("==============================\n")
         sb.append("Terima kasih atas kunjungannya!\n")
         sb.append("==============================\n")
@@ -145,7 +106,7 @@ class Nota : AppCompatActivity() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_input_nomor, null)
         val etNomor = dialogView.findViewById<TextInputEditText>(R.id.etNomorWA)
 
-        val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         builder.setTitle("Bagikan ke WhatsApp")
         builder.setView(dialogView)
         builder.setPositiveButton("Kirim") { dialog, _ ->
@@ -182,7 +143,6 @@ class Nota : AppCompatActivity() {
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            // Fallback for direct URL if needed
             try {
                 val url = "https://api.whatsapp.com/send?phone=$formattedNomor&text=${java.net.URLEncoder.encode(receiptText, "UTF-8")}"
                 val i = Intent(Intent.ACTION_VIEW)
@@ -210,40 +170,6 @@ class Nota : AppCompatActivity() {
                 printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
             }
         }
-    }
-
-    private fun updateStockInFirebase(items: ArrayList<CartItem>?) {
-        if (isStockUpdated || items.isNullOrEmpty()) return
-
-        val database = FirebaseDatabase.getInstance()
-        val productsRef = database.getReference("produk")
-
-        for (item in items) {
-            val idProduk = item.idProduk ?: continue
-            val quantityToSubtract = item.jumlah ?: 0
-
-            productsRef.child(idProduk).runTransaction(object : Transaction.Handler {
-                override fun doTransaction(currentData: MutableData): Transaction.Result {
-                    val product = currentData.getValue(ModelProduk::class.java) ?: return Transaction.success(currentData)
-                    val currentStock = product.stokProduk ?: 0
-                    val newStock = (currentStock - quantityToSubtract).coerceAtLeast(0)
-                    currentData.child("stokProduk").value = newStock
-                    if (newStock == 0) {
-                        currentData.child("statusProduk").value = "Nonaktif"
-                    }
-                    return Transaction.success(currentData)
-                }
-
-                override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
-                    if (error != null) {
-                        runOnUiThread {
-                            Toast.makeText(this@Nota, "Gagal memperbarui stok: ${error.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            })
-        }
-        isStockUpdated = true
     }
 
     private fun displayItems(items: ArrayList<CartItem>?) {

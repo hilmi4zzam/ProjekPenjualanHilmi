@@ -7,13 +7,15 @@ class ModelLaporan(
     val idLaporan: String? = null,
     val namaPemesan: String? = null,
     val totalHarga: Int? = 0,
-    val timestamp: Long? = 0
+    val timestamp: Long? = 0,
+    val items: List<CartItem>? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
         parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Long::class.java.classLoader) as? Long
+        parcel.readValue(Long::class.java.classLoader) as? Long,
+        parcel.createTypedArrayList(CartItem.CREATOR)
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -21,6 +23,7 @@ class ModelLaporan(
         parcel.writeString(namaPemesan)
         parcel.writeValue(totalHarga)
         parcel.writeValue(timestamp)
+        parcel.writeTypedList(items)
     }
 
     override fun describeContents(): Int = 0
