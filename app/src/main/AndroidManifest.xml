@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjekPenjualanHilmi">
         <activity
+            android:name=".laporan.DataLaporanPenjualan"
+            android:exported="false" />
+        <activity
             android:name=".transaksi.Nota"
             android:exported="false" />
         <activity
@@ -61,7 +64,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>
