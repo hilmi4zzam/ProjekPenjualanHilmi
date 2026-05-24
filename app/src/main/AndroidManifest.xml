@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjekPenjualanHilmi">
         <activity
+            android:name=".transaksi.Pembayaran"
+            android:exported="false" />
+        <activity
             android:name=".transaksi.ModTransaksi"
             android:exported="false" />
         <activity

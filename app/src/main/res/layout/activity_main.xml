@@ -66,7 +66,6 @@
             android:layout_height="400dp"
             android:background="@drawable/kotak"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/selamatdatang"
             android:layout_marginTop="100dp"/>
 
         <ImageView
