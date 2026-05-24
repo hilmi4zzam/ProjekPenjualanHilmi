@@ -3,6 +3,7 @@ package com.hilmi.projekpenjualan.produk
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,9 +18,11 @@ import com.google.firebase.database.ValueEventListener
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.ModelCabang
 import com.hilmi.projekpenjualan.model.ModelKategori
+import com.hilmi.projekpenjualan.model.ModelProduk
 
 class ModProduk : AppCompatActivity() {
 
+    private lateinit var tvTitle: TextView
     private lateinit var etNama: TextInputEditText
     private lateinit var etHarga: TextInputEditText
     private lateinit var etStok: TextInputEditText
@@ -33,6 +36,8 @@ class ModProduk : AppCompatActivity() {
     private val refKategori = database.getReference("kategori")
     private val refCabang = database.getReference("cabang")
 
+    private var selectedProduk: ModelProduk? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,7 +45,7 @@ class ModProduk : AppCompatActivity() {
 
         init()
 
-        // Setup Dropdowns from Firebase to spinner auto complete
+        // Setup Dropdowns from Firebase
         getKategoriFromFirebase()
         getCabangFromFirebase()
 
@@ -48,7 +53,21 @@ class ModProduk : AppCompatActivity() {
         val statusList = resources.getStringArray(R.array.statusKategori)
         val adapterStatus = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, statusList)
         spStatus.setAdapter(adapterStatus)
-        if (statusList.isNotEmpty()) spStatus.setText(statusList[0], false)
+
+        // Check if editing
+        selectedProduk = intent.getParcelableExtra("PRODUK")
+        if (selectedProduk != null) {
+            tvTitle.text = "Edit Produk"
+            etNama.setText(selectedProduk?.namaProduk)
+            etHarga.setText(selectedProduk?.hargaProduk.toString())
+            etStok.setText(selectedProduk?.stokProduk.toString())
+            spKategori.setText(selectedProduk?.idKategori, false)
+            spCabang.setText(selectedProduk?.idCabang, false)
+            spStatus.setText(selectedProduk?.statusProduk, false)
+        } else {
+            tvTitle.text = "Tambah Produk"
+            if (statusList.isNotEmpty()) spStatus.setText(statusList[0], false)
+        }
 
         btnSimpan.setOnClickListener {
             val nama = etNama.text.toString().trim()
@@ -59,7 +78,7 @@ class ModProduk : AppCompatActivity() {
             val status = spStatus.text.toString()
 
             if (nama.isEmpty()) {
-                etNama.error = "Nama cabang wajib diisi"
+                etNama.error = "Nama produk wajib diisi"
                 return@setOnClickListener
             }
             if (harga.isEmpty()) {
@@ -79,13 +98,19 @@ class ModProduk : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val key = myRef.push().key
+            val stokInt = stok.toIntOrNull() ?: 0
+            if (status == "Aktif" && stokInt == 0) {
+                Toast.makeText(this, "Stok habis, perbarui jumlah stok untuk mengaktifkan", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val key = selectedProduk?.idProduk ?: myRef.push().key
             if (key != null) {
                 val produkData = mapOf(
                     "idProduk" to key,
                     "namaProduk" to nama,
                     "hargaProduk" to harga.toInt(),
-                    "stokProduk" to stok.toInt(),
+                    "stokProduk" to stokInt,
                     "idKategori" to kategori,
                     "idCabang" to cabang,
                     "statusProduk" to status
@@ -107,14 +132,12 @@ class ModProduk : AppCompatActivity() {
         }
     }
 
-    //buat ambil data dari firebase untuk ditampilkan ke spinner auto complete(tak tandai make merah merah)
     private fun getKategoriFromFirebase() {
         refKategori.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val listNamaKategori = mutableListOf<String>()
                 for (data in snapshot.children) {
                     val kategori = data.getValue(ModelKategori::class.java)
-                    // Hanya tampilkan kategori yang statusnya "Aktif"
                     if (kategori?.statusKategori == "Aktif") {
                         kategori.namaKategori?.let { listNamaKategori.add(it) }
                     }
@@ -135,7 +158,6 @@ class ModProduk : AppCompatActivity() {
                 val listNamaCabang = mutableListOf<String>()
                 for (data in snapshot.children) {
                     val cabang = data.getValue(ModelCabang::class.java)
-                    // Hanya tampilkan cabang yang statusnya "Aktif"
                     if (cabang?.statusCabang == "Aktif") {
                         cabang.namaCabang?.let { listNamaCabang.add(it) }
                     }
@@ -151,6 +173,7 @@ class ModProduk : AppCompatActivity() {
     }
 
     private fun init() {
+        tvTitle = findViewById(R.id.tvTambahProduk)
         etNama = findViewById(R.id.tietNamaProduk)
         etHarga = findViewById(R.id.tietHargaProduk)
         etStok = findViewById(R.id.tietStokProduk)

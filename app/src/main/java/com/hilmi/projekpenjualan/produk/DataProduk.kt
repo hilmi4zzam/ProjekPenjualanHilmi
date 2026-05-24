@@ -41,13 +41,22 @@ class DataProduk : AppCompatActivity() {
             
             adapter.setOnItemClickListener(object : AdapterProduk.OnItemClickListener {
                 override fun onItemClick(produk: ModelProduk) {
-                    // Implementasi edit jika diperlukan
+                    val intent = Intent(this@DataProduk, ModProduk::class.java)
+                    intent.putExtra("PRODUK", produk)
+                    startActivity(intent)
                 }
 
                 override fun onStatusClick(produk: ModelProduk) {
                     val statusBaru = if (produk.statusProduk == "Aktif") "Nonaktif" else "Aktif"
+                    
+                    if (statusBaru == "Aktif" && (produk.stokProduk ?: 0) == 0) {
+                        Toast.makeText(this@DataProduk, "Stok habis, perbarui jumlah stok untuk mengaktifkan", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
                     viewModel.updateStatus(produk.idProduk, statusBaru)
-                    Toast.makeText(this@DataProduk, "Status ${produk.namaProduk} diubah", Toast.LENGTH_SHORT).show()
+                    val toastMsg = if (statusBaru == "Aktif") "Status ${produk.namaProduk} di Aktif'kan" else "Status ${produk.namaProduk} di Nonaktif'kan"
+                    Toast.makeText(this@DataProduk, toastMsg, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onItemLongClick(produk: ModelProduk) {
