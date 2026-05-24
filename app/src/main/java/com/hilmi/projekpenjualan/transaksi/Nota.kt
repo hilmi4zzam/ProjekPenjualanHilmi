@@ -16,8 +16,14 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.print.PrintHelper
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.CartItem
+import com.hilmi.projekpenjualan.model.ModelProduk
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -28,6 +34,7 @@ class Nota : AppCompatActivity() {
     private lateinit var cvNota: MaterialCardView
     private lateinit var btnCetak: MaterialButton
     private lateinit var btnSelesai: MaterialButton
+    private var isStockUpdated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +60,7 @@ class Nota : AppCompatActivity() {
         displayTotalPrice(totalPrice)
 
         btnSelesai.setOnClickListener {
+            updateStockInFirebase(selectedItems)
             val intent = Intent(this, DataTransaksi::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -60,8 +68,47 @@ class Nota : AppCompatActivity() {
         }
 
         btnCetak.setOnClickListener {
+            updateStockInFirebase(selectedItems)
             cetakNota()
         }
+    }
+
+    private fun updateStockInFirebase(items: ArrayList<CartItem>?) {
+        if (isStockUpdated || items.isNullOrEmpty()) return
+
+        val database = FirebaseDatabase.getInstance()
+        val productsRef = database.getReference("produk")
+
+        for (item in items) {
+            val idProduk = item.idProduk ?: continue
+            val quantityToSubtract = item.jumlah ?: 0
+
+            productsRef.child(idProduk).runTransaction(object : Transaction.Handler {
+                override fun doTransaction(currentData: MutableData): Transaction.Result {
+                    val product = currentData.getValue(ModelProduk::class.java) ?: return Transaction.success(currentData)
+
+                    val currentStock = product.stokProduk ?: 0
+                    val newStock = (currentStock - quantityToSubtract).coerceAtLeast(0)
+
+                    currentData.child("stokProduk").value = newStock
+
+                    if (newStock == 0) {
+                        currentData.child("statusProduk").value = "Nonaktif"
+                    }
+
+                    return Transaction.success(currentData)
+                }
+
+                override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
+                    if (error != null) {
+                        runOnUiThread {
+                            Toast.makeText(this@Nota, "Gagal memperbarui stok: ${error.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            })
+        }
+        isStockUpdated = true
     }
 
     private fun displayItems(items: ArrayList<CartItem>?) {
