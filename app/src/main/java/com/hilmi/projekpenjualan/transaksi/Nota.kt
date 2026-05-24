@@ -26,6 +26,7 @@ import com.google.firebase.database.MutableData
 import com.google.firebase.database.Transaction
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.CartItem
+import com.hilmi.projekpenjualan.model.ModelLaporan
 import com.hilmi.projekpenjualan.model.ModelProduk
 import java.text.NumberFormat
 import java.util.Locale
@@ -39,6 +40,7 @@ class Nota : AppCompatActivity() {
     private lateinit var btnBagikan: MaterialButton
     private lateinit var btnSelesai: MaterialButton
     private var isStockUpdated = false
+    private var isLaporanSaved = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +70,7 @@ class Nota : AppCompatActivity() {
 
         btnSelesai.setOnClickListener {
             updateStockInFirebase(selectedItems)
+            saveToLaporan(namaPemesan, totalPrice)
             val intent = Intent(this, DataTransaksi::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -76,11 +79,33 @@ class Nota : AppCompatActivity() {
 
         btnCetak.setOnClickListener {
             updateStockInFirebase(selectedItems)
+            saveToLaporan(namaPemesan, totalPrice)
             cetakNota()
         }
 
         btnBagikan.setOnClickListener {
             showShareDialog()
+        }
+    }
+
+    private fun saveToLaporan(namaPemesan: String?, totalHarga: Int) {
+        if (isLaporanSaved) return
+        
+        val database = FirebaseDatabase.getInstance()
+        val laporanRef = database.getReference("laporan")
+        val key = laporanRef.push().key
+        
+        if (key != null) {
+            val laporanData = ModelLaporan(
+                idLaporan = key,
+                namaPemesan = namaPemesan,
+                totalHarga = totalHarga,
+                timestamp = System.currentTimeMillis()
+            )
+            
+            laporanRef.child(key).setValue(laporanData).addOnSuccessListener {
+                isLaporanSaved = true
+            }
         }
     }
 

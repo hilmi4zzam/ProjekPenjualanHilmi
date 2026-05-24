@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.hilmi.projekpenjualan.cabang.DataCabang
 import com.hilmi.projekpenjualan.kategori.DataKategori
+import com.hilmi.projekpenjualan.laporan.DataLaporanPenjualan
 import com.hilmi.projekpenjualan.produk.DataProduk
 import com.hilmi.projekpenjualan.transaksi.DataTransaksi
 
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var CardProduk : ConstraintLayout
     lateinit var CardCabang : ConstraintLayout
     lateinit var CardTransaksi : ConstraintLayout
+    lateinit var CardLaporan : ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +53,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        CardLaporan.setOnClickListener {
+            val intent = Intent(this@MainActivity, DataLaporanPenjualan::class.java)
+            startActivity(intent)
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -64,5 +71,6 @@ class MainActivity : AppCompatActivity() {
         CardProduk = findViewById(R.id.menu1)
         CardCabang = findViewById(R.id.menu3)
         CardTransaksi = findViewById(R.id.menu6)
+        CardLaporan = findViewById(R.id.menu5)
     }
 }
