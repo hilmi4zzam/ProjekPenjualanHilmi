@@ -49,4 +49,10 @@ class DataLaporanViewModel : ViewModel() {
             laporanList.value = ArrayList(filteredList)
         }
     }
+
+    fun deleteLaporan(idLaporan: String?) {
+        if (idLaporan != null) {
+            myRef.child(idLaporan).removeValue()
+        }
+    }
 }

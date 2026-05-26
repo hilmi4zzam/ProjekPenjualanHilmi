@@ -44,6 +44,19 @@ class DataKategori : AppCompatActivity() {
 
         rvDATAKATEGORI.layoutManager = layoutManager
         rvDATAKATEGORI.setHasFixedSize(true)
+
+        setupSearchView()
+    }
+
+    private fun setupSearchView() {
+        val searchView = findViewById<androidx.appcompat.widget.SearchView>(R.id.svKategori)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.filterList(newText)
+                return true
+            }
+        })
     }
 
     private fun init() {

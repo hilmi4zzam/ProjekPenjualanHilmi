@@ -47,7 +47,7 @@ class DataCabang : AppCompatActivity() {
                 override fun onStatusClick(cabang: ModelCabang) {
                     val newStatus = if (cabang.statusCabang == "Aktif") "Nonaktif" else "Aktif"
                     viewModel.updateStatus(cabang.idCabang, newStatus)
-                    Toast.makeText(this@DataCabang, "Status ${cabang.namaCabang} diubah", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DataCabang, "Status ${cabang.namaCabang} di$newStatus'kan ", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onItemLongClick(cabang: ModelCabang) {
@@ -65,6 +65,19 @@ class DataCabang : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        setupSearchView()
+    }
+
+    private fun setupSearchView() {
+        val searchView = findViewById<androidx.appcompat.widget.SearchView>(R.id.svCabang)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.filterList(newText)
+                return true
+            }
+        })
     }
 
     private fun init() {
@@ -75,7 +88,7 @@ class DataCabang : AppCompatActivity() {
     private fun showDeleteDialog(cabang: ModelCabang) {
         val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
         builder.setTitle("Hapus Cabang")
-        builder.setMessage("Apakah Anda yakin ingin menghapus ${cabang.namaCabang}?")
+        builder.setMessage("Apakah Anda yakin ingin menghapus cabang ${cabang.namaCabang}?")
         builder.setPositiveButton("Hapus") { _, _ ->
             viewModel.deleteCabang(cabang.idCabang)
             Toast.makeText(this, "${cabang.namaCabang} berhasil dihapus", Toast.LENGTH_SHORT).show()

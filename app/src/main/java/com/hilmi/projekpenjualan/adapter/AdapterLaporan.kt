@@ -17,6 +17,7 @@ class AdapterLaporan(private var laporanList: List<ModelLaporan>) :
 
     interface OnItemClickListener {
         fun onItemClick(laporan: ModelLaporan)
+        fun onItemLongClick(laporan: ModelLaporan)
     }
 
     private var listener: OnItemClickListener? = null
@@ -63,6 +64,11 @@ class AdapterLaporan(private var laporanList: List<ModelLaporan>) :
 
             itemView.setOnClickListener {
                 listener?.onItemClick(laporan)
+            }
+
+            itemView.setOnLongClickListener {
+                listener?.onItemLongClick(laporan)
+                true
             }
         }
 

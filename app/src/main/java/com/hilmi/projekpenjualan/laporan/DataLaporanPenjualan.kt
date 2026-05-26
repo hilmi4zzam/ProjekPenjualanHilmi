@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hilmi.projekpenjualan.R
 import android.content.Intent
+import android.widget.Toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hilmi.projekpenjualan.adapter.AdapterLaporan
 import com.hilmi.projekpenjualan.model.ModelLaporan
 import com.hilmi.projekpenjualan.view_model.DataLaporanViewModel
@@ -52,7 +54,25 @@ class DataLaporanPenjualan : AppCompatActivity() {
                 intent.putExtra("LAPORAN", laporan)
                 startActivity(intent)
             }
+
+            override fun onItemLongClick(laporan: ModelLaporan) {
+                showDeleteDialog(laporan)
+            }
         })
+    }
+
+    private fun showDeleteDialog(laporan: ModelLaporan) {
+        val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
+        builder.setTitle("Hapus Laporan")
+        builder.setMessage("Apakah Anda yakin ingin menghapus laporan ini?")
+        builder.setPositiveButton("Hapus") { _, _ ->
+            viewModel.deleteLaporan(laporan.idLaporan)
+            Toast.makeText(this, "Laporan berhasil dihapus", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("Batal") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 
     private fun setupSearchView() {

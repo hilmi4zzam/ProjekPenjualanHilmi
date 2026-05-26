@@ -75,6 +75,19 @@ class DataProduk : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        setupSearchView()
+    }
+
+    private fun setupSearchView() {
+        val searchView = findViewById<androidx.appcompat.widget.SearchView>(R.id.svProduk)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.filterList(newText)
+                return true
+            }
+        })
     }
 
     private fun showDeleteDialog(produk: ModelProduk) {
