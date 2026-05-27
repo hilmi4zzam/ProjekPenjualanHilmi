@@ -26,8 +26,6 @@ class ModPegawai : AppCompatActivity() {
     private lateinit var tilStatusPegawai: TextInputLayout
     private lateinit var spStatusPegawai: AutoCompleteTextView
     private lateinit var btnSimpan: MaterialButton
-    
-    private var selectedPegawai: ModelPegawai? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +49,8 @@ class ModPegawai : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, statusList)
         spStatusPegawai.setAdapter(adapter)
 
-        selectedPegawai = intent.getParcelableExtra("PEGAWAI")
-        if (selectedPegawai != null) {
-            tvJudul.text = "Edit Pegawai"
-            etNamaPegawai.setText(selectedPegawai?.namaPegawai)
-            spStatusPegawai.setText(selectedPegawai?.statusPegawai, false)
-        } else {
-            tvJudul.text = "Tambah Pegawai"
-            if (statusList.isNotEmpty()) spStatusPegawai.setText(statusList[0], false)
-        }
+        tvJudul.text = "Tambah Pegawai"
+        if (statusList.isNotEmpty()) spStatusPegawai.setText(statusList[0], false)
 
         btnSimpan.setOnClickListener {
             val nama = etNamaPegawai.text.toString().trim()
@@ -73,21 +64,40 @@ class ModPegawai : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val key = selectedPegawai?.idPegawai ?: myRef.push().key
+            val key = myRef.push().key
             if (key != null) {
-                val pegawaiData = ModelPegawai(
-                    idPegawai = key,
-                    namaPegawai = nama,
-                    statusPegawai = status
-                )
+                myRef.get()
+                    .addOnSuccessListener { snapshot ->
+                        val hasActivePegawai = snapshot.children.any { dataPegawai ->
+                            dataPegawai.child("statusPegawai").getValue(String::class.java) == "Aktif"
+                        }
+                        val finalStatus = if (status == "Aktif" || !hasActivePegawai) "Aktif" else "Nonaktif"
+                        val updates = hashMapOf<String, Any?>()
 
-                myRef.child(key).setValue(pegawaiData)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Pegawai berhasil disimpan", Toast.LENGTH_SHORT).show()
-                        finish()
+                        if (finalStatus == "Aktif") {
+                            snapshot.children.forEach { dataPegawai ->
+                                val idPegawai = dataPegawai.key ?: return@forEach
+                                updates["$idPegawai/statusPegawai"] = "Nonaktif"
+                            }
+                        }
+
+                        updates[key] = ModelPegawai(
+                            idPegawai = key,
+                            namaPegawai = nama,
+                            statusPegawai = finalStatus
+                        )
+
+                        myRef.updateChildren(updates)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Pegawai berhasil disimpan", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Gagal menyimpan pegawai: ${it.message}", Toast.LENGTH_SHORT).show()
+                            }
                     }
                     .addOnFailureListener {
-                        Toast.makeText(this, "Gagal menyimpan pegawai: ${it.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Gagal memuat data pegawai: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
             }
         }

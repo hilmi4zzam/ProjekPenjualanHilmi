@@ -42,6 +42,7 @@ class DataPegawaiViewModel : ViewModel() {
                     originalPegawaiList.addAll(list)
                     pegawaiList.value = list
                     isSearchEmpty.value = false
+                    normalizeActivePegawai(snapshot)
                     Log.d("DataPegawaiViewModel", "Loaded ${list.size} pegawai items.")
                 } else {
                     originalPegawaiList.clear()
@@ -71,26 +72,118 @@ class DataPegawaiViewModel : ViewModel() {
         }
     }
 
-    fun updateStatus(idPegawai: String?, newStatus: String) {
-        if (idPegawai != null) {
-            myRef.child(idPegawai).child("statusPegawai").setValue(newStatus)
-                .addOnSuccessListener {
-                    Log.d("DataPegawaiViewModel", "Status updated to $newStatus")
-                }
-                .addOnFailureListener {
-                    Log.e("DataPegawaiViewModel", "Failed to update status: ${it.message}")
-                }
+    fun updateStatus(
+        pegawai: ModelPegawai,
+        onSuccess: (String) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val idPegawai = pegawai.idPegawai
+        if (idPegawai == null) {
+            onError("Data pegawai tidak valid")
+            return
         }
+
+        myRef.get()
+            .addOnSuccessListener { snapshot ->
+                val updates = hashMapOf<String, Any?>()
+
+                if (pegawai.statusPegawai == "Aktif") {
+                    return@addOnSuccessListener
+                }
+
+                updates["$idPegawai/statusPegawai"] = "Aktif"
+                snapshot.children.forEach { dataPegawai ->
+                    val currentId = dataPegawai.key ?: return@forEach
+                    if (currentId != idPegawai) {
+                        updates["$currentId/statusPegawai"] = "Nonaktif"
+                    }
+                }
+
+                myRef.updateChildren(updates)
+                    .addOnSuccessListener {
+                        Log.d("DataPegawaiViewModel", "Status updated: $idPegawai is active")
+                        onSuccess("Status ${pegawai.namaPegawai} di Aktif'kan")
+                    }
+                    .addOnFailureListener {
+                        Log.e("DataPegawaiViewModel", "Failed to update status: ${it.message}")
+                        onError("Gagal memperbarui status: ${it.message}")
+                    }
+            }
+            .addOnFailureListener {
+                Log.e("DataPegawaiViewModel", "Failed to load employees: ${it.message}")
+                onError("Gagal memuat data pegawai: ${it.message}")
+            }
     }
 
-    fun deletePegawai(idPegawai: String?) {
-        if (idPegawai != null) {
-            myRef.child(idPegawai).removeValue()
+    fun deletePegawai(
+        pegawai: ModelPegawai,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val idPegawai = pegawai.idPegawai
+        if (idPegawai == null) {
+            onError("Data pegawai tidak valid")
+            return
+        }
+
+        myRef.get()
+            .addOnSuccessListener { snapshot ->
+                val otherPegawai = snapshot.children.filter { it.key != idPegawai }
+                val updates = hashMapOf<String, Any?>()
+
+                if (pegawai.statusPegawai == "Aktif" && otherPegawai.isNotEmpty()) {
+                    val nextActiveId = otherPegawai.first().key
+                    if (nextActiveId != null) {
+                        updates["$nextActiveId/statusPegawai"] = "Aktif"
+                    }
+                } else if (pegawai.statusPegawai == "Aktif") {
+                    onError("Minimal harus ada satu pegawai aktif")
+                    return@addOnSuccessListener
+                }
+                updates[idPegawai] = null
+
+                myRef.updateChildren(updates)
+                    .addOnSuccessListener {
+                        Log.d("DataPegawaiViewModel", "Pegawai deleted successfully")
+                        onSuccess()
+                    }
+                    .addOnFailureListener {
+                        Log.e("DataPegawaiViewModel", "Failed to delete pegawai: ${it.message}")
+                        onError("Gagal menghapus pegawai: ${it.message}")
+                    }
+            }
+            .addOnFailureListener {
+                Log.e("DataPegawaiViewModel", "Failed to load employees: ${it.message}")
+                onError("Gagal memuat data pegawai: ${it.message}")
+            }
+    }
+
+    private fun normalizeActivePegawai(snapshot: DataSnapshot) {
+        val pegawaiSnapshots = snapshot.children.toList()
+        if (pegawaiSnapshots.isEmpty()) return
+
+        val activePegawai = pegawaiSnapshots.filter { dataPegawai ->
+            dataPegawai.child("statusPegawai").getValue(String::class.java) == "Aktif"
+        }
+        val activeIdToKeep = activePegawai.firstOrNull()?.key ?: pegawaiSnapshots.firstOrNull()?.key ?: return
+        val updates = hashMapOf<String, Any?>()
+
+        pegawaiSnapshots.forEach { dataPegawai ->
+            val idPegawai = dataPegawai.key ?: return@forEach
+            val currentStatus = dataPegawai.child("statusPegawai").getValue(String::class.java)
+            val expectedStatus = if (idPegawai == activeIdToKeep) "Aktif" else "Nonaktif"
+            if (currentStatus != expectedStatus) {
+                updates["$idPegawai/statusPegawai"] = expectedStatus
+            }
+        }
+
+        if (updates.isNotEmpty()) {
+            myRef.updateChildren(updates)
                 .addOnSuccessListener {
-                    Log.d("DataPegawaiViewModel", "Pegawai deleted successfully")
+                    Log.d("DataPegawaiViewModel", "Active employee status normalized")
                 }
                 .addOnFailureListener {
-                    Log.e("DataPegawaiViewModel", "Failed to delete pegawai: ${it.message}")
+                    Log.e("DataPegawaiViewModel", "Failed to normalize active employee: ${it.message}")
                 }
         }
     }

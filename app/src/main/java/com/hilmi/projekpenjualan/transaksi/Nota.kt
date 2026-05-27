@@ -173,7 +173,7 @@ class Nota : AppCompatActivity() {
         
         val sb = StringBuilder()
         sb.append("==============================\n")
-        sb.append("        HILMI STORE        \n")
+        sb.append("        Belum Kepikiran       \n")
         sb.append("==============================\n")
         sb.append("Kasir: $namaKasirAktif\n")
         sb.append("Nama: ${namaPemesan ?: "-"}\n")
@@ -187,9 +187,9 @@ class Nota : AppCompatActivity() {
         }
         
         sb.append("------------------------------\n")
-        sb.append("DIBAYAR: ${formatRupiah.format(dibayar)}\n")
-        sb.append("KEMBALIAN: ${formatRupiah.format(kembalian)}\n")
-        sb.append("TOTAL: ${formatRupiah.format(totalPrice)}\n")
+        sb.append("Dibayar: ${formatRupiah.format(dibayar)}\n")
+        sb.append("Kembalian: ${formatRupiah.format(kembalian)}\n")
+        sb.append("Total: ${formatRupiah.format(totalPrice)}\n")
         sb.append("==============================\n")
         sb.append("Terima kasih atas kunjungannya!\n")
         sb.append("==============================\n")

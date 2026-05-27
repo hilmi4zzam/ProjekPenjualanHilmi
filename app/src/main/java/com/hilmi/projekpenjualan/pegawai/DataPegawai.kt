@@ -71,17 +71,16 @@ class DataPegawai : AppCompatActivity() {
             rvDataPegawai.adapter = adapter
 
             adapter.setOnItemClickListener(object : AdapterPegawai.OnItemClickListener {
-                override fun onItemClick(pegawai: ModelPegawai) {
-                    val intent = Intent(this@DataPegawai, ModPegawai::class.java)
-                    intent.putExtra("PEGAWAI", pegawai)
-                    startActivity(intent)
-                }
-
                 override fun onStatusClick(pegawai: ModelPegawai) {
-                    val newStatus = if (pegawai.statusPegawai == "Aktif") "Nonaktif" else "Aktif"
-                    viewModel.updateStatus(pegawai.idPegawai, newStatus)
-                    val toastMsg = if (newStatus == "Aktif") "Status ${pegawai.namaPegawai} di Aktif'kan" else "Status ${pegawai.namaPegawai} di Nonaktif'kan"
-                    Toast.makeText(this@DataPegawai, toastMsg, Toast.LENGTH_SHORT).show()
+                    viewModel.updateStatus(
+                        pegawai,
+                        onSuccess = { message ->
+                            Toast.makeText(this@DataPegawai, message, Toast.LENGTH_SHORT).show()
+                        },
+                        onError = { message ->
+                            Toast.makeText(this@DataPegawai, message, Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
 
                 override fun onItemLongClick(pegawai: ModelPegawai) {
@@ -96,8 +95,15 @@ class DataPegawai : AppCompatActivity() {
         builder.setTitle("Hapus Pegawai")
         builder.setMessage("\nApakah Anda yakin ingin menghapus pegawai ${pegawai.namaPegawai}?")
         builder.setPositiveButton("Hapus") { _, _ ->
-            viewModel.deletePegawai(pegawai.idPegawai)
-            Toast.makeText(this, "${pegawai.namaPegawai} berhasil dihapus", Toast.LENGTH_SHORT).show()
+            viewModel.deletePegawai(
+                pegawai,
+                onSuccess = {
+                    Toast.makeText(this, "${pegawai.namaPegawai} berhasil dihapus", Toast.LENGTH_SHORT).show()
+                },
+                onError = { message ->
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
+            )
         }
         builder.setNegativeButton("Batal") { dialog, _ ->
             dialog.dismiss()

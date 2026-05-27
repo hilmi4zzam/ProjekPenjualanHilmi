@@ -16,7 +16,6 @@ class AdapterPegawai(private val pegawaiList: List<ModelPegawai>) :
     lateinit var appContext: Context
 
     interface OnItemClickListener {
-        fun onItemClick(pegawai: ModelPegawai)
         fun onStatusClick(pegawai: ModelPegawai)
         fun onItemLongClick(pegawai: ModelPegawai)
     }
@@ -54,10 +53,6 @@ class AdapterPegawai(private val pegawaiList: List<ModelPegawai>) :
                 chipStatus.setChipIconResource(R.drawable.lingkaran_online)
             } else {
                 chipStatus.setChipIconResource(R.drawable.lingkaran_offline)
-            }
-
-            itemView.setOnClickListener {
-                listener?.onItemClick(pegawai)
             }
 
             itemView.setOnLongClickListener {
