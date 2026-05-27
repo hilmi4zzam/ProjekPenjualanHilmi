@@ -28,6 +28,9 @@ class DetailLaporan : AppCompatActivity() {
     private lateinit var llItemSummary: LinearLayout
     private lateinit var tvTotalHarga: TextView
     private lateinit var tvNamaPemesan: TextView
+    private lateinit var tvNamaKasir: TextView
+    private lateinit var tvDibayar: TextView
+    private lateinit var tvKembalian: TextView
     private lateinit var btnCetak: MaterialButton
     private lateinit var btnBagikan: MaterialButton
     private lateinit var btnSelesai: MaterialButton
@@ -49,6 +52,9 @@ class DetailLaporan : AppCompatActivity() {
         llItemSummary = findViewById(R.id.llItemSummary)
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
         tvNamaPemesan = findViewById(R.id.tvNama)
+        tvNamaKasir = findViewById(R.id.tvNamaKasir)
+        tvDibayar = findViewById(R.id.tvDibayar)
+        tvKembalian = findViewById(R.id.tvKembalian)
         btnCetak = findViewById(R.id.btnCetak)
         btnBagikan = findViewById(R.id.btnBagikan)
         btnSelesai = findViewById(R.id.btnSelesai)
@@ -57,7 +63,9 @@ class DetailLaporan : AppCompatActivity() {
         
         if (selectedLaporan != null) {
             tvNamaPemesan.text = selectedLaporan?.namaPemesan
+            tvNamaKasir.text = selectedLaporan?.namaKasir ?: "-"
             displayTotalPrice(selectedLaporan?.totalHarga ?: 0)
+            displayPayment(selectedLaporan?.dibayar ?: 0L, selectedLaporan?.kembalian ?: 0L)
             displayItems(selectedLaporan?.items as? ArrayList<CartItem>)
         }
 
@@ -83,6 +91,7 @@ class DetailLaporan : AppCompatActivity() {
         sb.append("==============================\n")
         sb.append("        HILMI STORE        \n")
         sb.append("==============================\n")
+        sb.append("Kasir: ${selectedLaporan?.namaKasir ?: "-"}\n")
         sb.append("Nama: ${selectedLaporan?.namaPemesan ?: "-"}\n")
         sb.append("------------------------------\n")
         
@@ -94,6 +103,8 @@ class DetailLaporan : AppCompatActivity() {
         }
         
         sb.append("------------------------------\n")
+        sb.append("DIBAYAR: ${formatRupiah.format(selectedLaporan?.dibayar ?: 0L)}\n")
+        sb.append("KEMBALIAN: ${formatRupiah.format(selectedLaporan?.kembalian ?: 0L)}\n")
         sb.append("TOTAL: ${formatRupiah.format(selectedLaporan?.totalHarga ?: 0)}\n")
         sb.append("==============================\n")
         sb.append("Terima kasih atas kunjungannya!\n")
@@ -197,5 +208,12 @@ class DetailLaporan : AppCompatActivity() {
         val localeID = Locale("in", "ID")
         val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
         tvTotalHarga.text = formatRupiah.format(total)
+    }
+
+    private fun displayPayment(dibayar: Long, kembalian: Long) {
+        val localeID = Locale("in", "ID")
+        val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
+        tvDibayar.text = formatRupiah.format(dibayar)
+        tvKembalian.text = formatRupiah.format(kembalian)
     }
 }

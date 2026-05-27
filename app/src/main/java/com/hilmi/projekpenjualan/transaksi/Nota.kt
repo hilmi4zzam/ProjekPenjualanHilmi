@@ -36,11 +36,16 @@ class Nota : AppCompatActivity() {
     private lateinit var llItemSummary: LinearLayout
     private lateinit var tvTotalHarga: TextView
     private lateinit var tvNamaPemesan: TextView
+    private lateinit var tvNamaKasir: TextView
+    private lateinit var tvDibayar: TextView
+    private lateinit var tvKembalian: TextView
     private lateinit var btnCetak: MaterialButton
     private lateinit var btnBagikan: MaterialButton
     private lateinit var btnSelesai: MaterialButton
     private var isStockUpdated = false
     private var isLaporanSaved = false
+    private var isLaporanSaving = false
+    private var namaKasirAktif: String = "-"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +61,9 @@ class Nota : AppCompatActivity() {
         llItemSummary = findViewById(R.id.llItemSummary)
         tvTotalHarga = findViewById(R.id.tvTotalHarga)
         tvNamaPemesan = findViewById(R.id.tvNama)
+        tvNamaKasir = findViewById(R.id.tvNamaKasir)
+        tvDibayar = findViewById(R.id.tvDibayar)
+        tvKembalian = findViewById(R.id.tvKembalian)
         btnCetak = findViewById(R.id.btnCetak)
         btnBagikan = findViewById(R.id.btnBagikan)
         btnSelesai = findViewById(R.id.btnSelesai)
@@ -63,14 +71,18 @@ class Nota : AppCompatActivity() {
         val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
         val totalPrice = intent.getIntExtra("TOTAL_PRICE", 0)
         val namaPemesan = intent.getStringExtra("NAMA_PEMESAN")
+        val dibayar = intent.getLongExtra("DIBAYAR", 0L)
+        val kembalian = dibayar - totalPrice
 
+        loadNamaKasirAktif()
         displayItems(selectedItems)
         displayTotalPrice(totalPrice)
+        displayPayment(dibayar, kembalian)
         tvNamaPemesan.text = namaPemesan
 
         btnSelesai.setOnClickListener {
             updateStockInFirebase(selectedItems)
-            saveToLaporan(namaPemesan, totalPrice, selectedItems)
+            saveToLaporan(namaPemesan, totalPrice, selectedItems, dibayar, kembalian)
             val intent = Intent(this, DataTransaksi::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -79,7 +91,7 @@ class Nota : AppCompatActivity() {
 
         btnCetak.setOnClickListener {
             updateStockInFirebase(selectedItems)
-            saveToLaporan(namaPemesan, totalPrice, selectedItems)
+            saveToLaporan(namaPemesan, totalPrice, selectedItems, dibayar, kembalian)
             cetakNota()
         }
 
@@ -88,9 +100,41 @@ class Nota : AppCompatActivity() {
         }
     }
 
-    private fun saveToLaporan(namaPemesan: String?, totalHarga: Int, items: ArrayList<CartItem>?) {
-        if (isLaporanSaved) return
-        
+    private fun saveToLaporan(
+        namaPemesan: String?,
+        totalHarga: Int,
+        items: ArrayList<CartItem>?,
+        dibayar: Long,
+        kembalian: Long
+    ) {
+        if (isLaporanSaved || isLaporanSaving) return
+        isLaporanSaving = true
+
+        val database = FirebaseDatabase.getInstance()
+        if (namaKasirAktif != "-") {
+            saveLaporanToFirebase(namaPemesan, totalHarga, items, dibayar, kembalian, namaKasirAktif)
+            return
+        }
+
+        database.getReference("pegawai").get()
+            .addOnSuccessListener { snapshot ->
+                namaKasirAktif = getNamaKasirAktif(snapshot)
+                tvNamaKasir.text = namaKasirAktif
+                saveLaporanToFirebase(namaPemesan, totalHarga, items, dibayar, kembalian, namaKasirAktif)
+            }
+            .addOnFailureListener {
+                saveLaporanToFirebase(namaPemesan, totalHarga, items, dibayar, kembalian, namaKasirAktif)
+            }
+    }
+
+    private fun saveLaporanToFirebase(
+        namaPemesan: String?,
+        totalHarga: Int,
+        items: ArrayList<CartItem>?,
+        dibayar: Long,
+        kembalian: Long,
+        namaKasir: String
+    ) {
         val database = FirebaseDatabase.getInstance()
         val laporanRef = database.getReference("laporan")
         val key = laporanRef.push().key
@@ -101,12 +145,19 @@ class Nota : AppCompatActivity() {
                 namaPemesan = namaPemesan,
                 totalHarga = totalHarga,
                 timestamp = System.currentTimeMillis(),
-                items = items
+                items = items,
+                namaKasir = namaKasir,
+                dibayar = dibayar,
+                kembalian = kembalian
             )
             
             laporanRef.child(key).setValue(laporanData).addOnSuccessListener {
                 isLaporanSaved = true
+            }.addOnFailureListener {
+                isLaporanSaving = false
             }
+        } else {
+            isLaporanSaving = false
         }
     }
 
@@ -114,6 +165,8 @@ class Nota : AppCompatActivity() {
         val selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
         val totalPrice = intent.getIntExtra("TOTAL_PRICE", 0)
         val namaPemesan = intent.getStringExtra("NAMA_PEMESAN")
+        val dibayar = intent.getLongExtra("DIBAYAR", 0L)
+        val kembalian = dibayar - totalPrice
 
         val localeID = Locale("in", "ID")
         val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
@@ -122,6 +175,7 @@ class Nota : AppCompatActivity() {
         sb.append("==============================\n")
         sb.append("        HILMI STORE        \n")
         sb.append("==============================\n")
+        sb.append("Kasir: $namaKasirAktif\n")
         sb.append("Nama: ${namaPemesan ?: "-"}\n")
         sb.append("------------------------------\n")
         
@@ -133,6 +187,8 @@ class Nota : AppCompatActivity() {
         }
         
         sb.append("------------------------------\n")
+        sb.append("DIBAYAR: ${formatRupiah.format(dibayar)}\n")
+        sb.append("KEMBALIAN: ${formatRupiah.format(kembalian)}\n")
         sb.append("TOTAL: ${formatRupiah.format(totalPrice)}\n")
         sb.append("==============================\n")
         sb.append("Terima kasih atas kunjungannya!\n")
@@ -271,5 +327,36 @@ class Nota : AppCompatActivity() {
         val localeID = Locale("in", "ID")
         val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
         tvTotalHarga.text = formatRupiah.format(total)
+    }
+
+    private fun displayPayment(dibayar: Long, kembalian: Long) {
+        val localeID = Locale("in", "ID")
+        val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
+        tvDibayar.text = formatRupiah.format(dibayar)
+        tvKembalian.text = formatRupiah.format(kembalian)
+    }
+
+    private fun loadNamaKasirAktif() {
+        val database = FirebaseDatabase.getInstance()
+        database.getReference("pegawai").get()
+            .addOnSuccessListener { snapshot ->
+                namaKasirAktif = getNamaKasirAktif(snapshot)
+                tvNamaKasir.text = namaKasirAktif
+            }
+            .addOnFailureListener {
+                namaKasirAktif = "-"
+                tvNamaKasir.text = namaKasirAktif
+            }
+    }
+
+    private fun getNamaKasirAktif(snapshot: DataSnapshot): String {
+        val pegawaiAktif = snapshot.children.firstOrNull { dataPegawai ->
+            dataPegawai.child("statusPegawai").getValue(String::class.java) == "Aktif"
+        }
+
+        return pegawaiAktif
+            ?.child("namaPegawai")
+            ?.getValue(String::class.java)
+            ?: "-"
     }
 }

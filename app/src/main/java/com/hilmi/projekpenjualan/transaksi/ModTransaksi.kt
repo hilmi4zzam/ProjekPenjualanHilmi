@@ -30,6 +30,8 @@ class ModTransaksi : AppCompatActivity() {
     private lateinit var rbTunaiButton: RadioButton
     private lateinit var tilNamaPemesan: TextInputLayout
     private lateinit var tietNamaPemesan: TextInputEditText
+    private lateinit var tilDibayar: TextInputLayout
+    private lateinit var tietDibayar: TextInputEditText
     private lateinit var btnPesan: CardView
     private var totalPrice: Int = 0
     private var selectedItems: ArrayList<CartItem>? = null
@@ -51,6 +53,8 @@ class ModTransaksi : AppCompatActivity() {
         rbTunaiButton = findViewById(R.id.rbTunaiButton)
         tilNamaPemesan = findViewById(R.id.tilModKategoriNama)
         tietNamaPemesan = findViewById(R.id.tietNamaKategori)
+        tilDibayar = findViewById(R.id.tilModDibayar)
+        tietDibayar = findViewById(R.id.tietModDibayar)
         btnPesan = findViewById(R.id.btnPesan)
 
         selectedItems = intent.getParcelableArrayListExtra<CartItem>("SELECTED_ITEMS")
@@ -92,10 +96,26 @@ class ModTransaksi : AppCompatActivity() {
                 tilNamaPemesan.error = null
             }
 
+            val dibayar = tietDibayar.text.toString().trim()
+            if (dibayar.isEmpty()) {
+                tilDibayar.error = "Nominal dibayar wajib diisi"
+                tietDibayar.requestFocus()
+                return@setOnClickListener
+            } else {
+                tilDibayar.error = null
+            }
+
+            val jumlahDibayar = dibayar.toLongOrNull() ?: 0L
+            if (jumlahDibayar < totalPrice) {
+                Toast.makeText(this, "Uang dibayarkan kurang", Toast.LENGTH_SHORT).show()
+                tietDibayar.requestFocus()
+                return@setOnClickListener
+            }
+
             when {
-                rbQrisButton.isChecked -> showQrisPopup()
+                rbQrisButton.isChecked -> showQrisPopup(jumlahDibayar)
                 rbTunaiButton.isChecked -> {
-                    navigateToNota()
+                    navigateToNota(jumlahDibayar)
                 }
                 else -> {
                     Toast.makeText(this, "Silakan pilih metode pembayaran", Toast.LENGTH_SHORT).show()
@@ -104,7 +124,7 @@ class ModTransaksi : AppCompatActivity() {
         }
     }
 
-    private fun showQrisPopup() {
+    private fun showQrisPopup(jumlahDibayar: Long) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.layout_popup_qris, null)
         val dialog = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
             .setView(dialogView)
@@ -121,17 +141,18 @@ class ModTransaksi : AppCompatActivity() {
 
         btnLanjutkan.setOnClickListener {
             dialog.dismiss()
-            navigateToNota()
+            navigateToNota(jumlahDibayar)
         }
 
         dialog.show()
     }
 
-    private fun navigateToNota() {
+    private fun navigateToNota(jumlahDibayar: Long) {
         val intent = Intent(this, Nota::class.java)
         intent.putParcelableArrayListExtra("SELECTED_ITEMS", selectedItems)
         intent.putExtra("TOTAL_PRICE", totalPrice)
         intent.putExtra("NAMA_PEMESAN", tietNamaPemesan.text.toString().trim())
+        intent.putExtra("DIBAYAR", jumlahDibayar)
         startActivity(intent)
         finish()
     }
