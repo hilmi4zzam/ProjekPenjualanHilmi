@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".cabang.ModCabang">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -93,7 +94,7 @@
             android:backgroundTint="#FFB200"
             android:fontFamily="@font/alata"
             android:text="Simpan"
-            android:textColor="@color/white"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
             app:cornerRadius="23dp"
             app:layout_constraintEnd_toEndOf="parent"

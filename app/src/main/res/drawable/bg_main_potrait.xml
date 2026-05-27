@@ -13,7 +13,7 @@
         android:pathData="M0,0 h100 v115 Q50,130 0,115 z" />
 
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="@color/background"
         android:pathData="M0,0 h100 v75 Q50,60 0,75 z" />
 
 </vector>

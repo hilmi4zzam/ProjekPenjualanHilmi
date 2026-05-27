@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +30,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvNota"
+            app:strokeColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:background="@color/background"
                 android:padding="15dp">
 
                 <RelativeLayout
@@ -54,6 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Nama Pemesan : "
+                        android:textColor="@color/black"
                         android:textSize="20sp"
                         android:layout_alignParentStart="true"
                         android:fontFamily="@font/alata"/>
@@ -62,6 +66,7 @@
                         android:id="@+id/tvNama"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:text="Hilmi"
                         android:layout_alignParentEnd="true"
                         android:textSize="20sp"
@@ -97,6 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total : "
+                        android:textColor="@color/black"
                         android:textSize="20sp"
                         android:layout_alignParentStart="true"
                         android:fontFamily="@font/alata"/>
@@ -106,6 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="60.000"
+                        android:textColor="@color/black"
                         android:layout_alignParentEnd="true"
                         android:textSize="20sp"
                         android:fontFamily="@font/alata"/>
@@ -121,6 +128,7 @@
             android:layout_height="65dp"
             android:text="Cetak"
             android:id="@+id/btnCetak"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cvNota"
@@ -135,6 +143,7 @@
             android:layout_width="0dp"
             android:layout_height="65dp"
             android:text="Bagikan"
+            android:textColor="#FFFFFF"
             android:id="@+id/btnBagikan"
             app:layout_constraintTop_toBottomOf="@id/cvNota"
             android:textSize="20sp"
@@ -153,6 +162,7 @@
             android:id="@+id/btnSelesai"
             app:layout_constraintTop_toBottomOf="@id/btnCetak"
             android:textSize="20sp"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:backgroundTint="#FFB200"

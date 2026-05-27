@@ -93,7 +93,7 @@ class DataProduk : AppCompatActivity() {
     private fun showDeleteDialog(produk: ModelProduk) {
         val builder = MaterialAlertDialogBuilder(this, R.style.RoundedAlertDialog)
         builder.setTitle("Hapus Produk")
-        builder.setMessage("Apakah Anda yakin ingin menghapus ${produk.namaProduk}?")
+        builder.setMessage("Apakah Anda yakin ingin menghapus produk ${produk.namaProduk}?")
         builder.setPositiveButton("Hapus") { _, _ ->
             viewModel.deleteProduk(produk.idProduk)
             Toast.makeText(this, "${produk.namaProduk} berhasil dihapus", Toast.LENGTH_SHORT).show()

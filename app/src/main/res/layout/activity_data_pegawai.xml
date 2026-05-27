@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".pegawai.DataPegawai">
 
     <com.google.android.material.card.MaterialCardView
@@ -13,6 +14,8 @@
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="30dp"
         app:cardCornerRadius="23dp"
+        android:backgroundTint="@color/background"
+        app:strokeColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/searchDataPegawai"
         android:layout_width="match_parent"

@@ -6,12 +6,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="30dp"
     app:cardCornerRadius="23dp"
+    app:strokeColor="@color/black"
     android:layout_marginEnd="30dp"
     android:layout_marginVertical="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background"
         android:padding="16dp">
 
         <com.google.android.material.card.MaterialCardView
@@ -59,7 +61,7 @@
             app:chipIcon="@drawable/lingkaran_online"
             app:chipIconSize="10dp"
             app:chipStrokeWidth="1dp"
-            app:chipStrokeColor="#D0D0D0"
+            app:chipStrokeColor="@color/black"
             app:chipCornerRadius="23dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".laporan.DataLaporanPenjualan">
 
     <com.google.android.material.card.MaterialCardView
@@ -16,6 +17,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/searchDataProduk"
         android:layout_width="match_parent"
+        android:backgroundTint="@color/background"
+        app:strokeColor="@color/black"
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.SearchView

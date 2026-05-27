@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".kategori.ModKategori">
 
     <ScrollView
@@ -40,6 +41,7 @@
                 android:layout_marginStart="30dp"
                 app:boxCornerRadiusBottomEnd="23dp"
                 app:boxCornerRadiusTopStart="23dp"
+                android:background="@color/background"
                 app:boxCornerRadiusBottomStart="23dp"
                 app:boxCornerRadiusTopEnd="23dp"
                 android:layout_marginTop="40dp"
@@ -62,6 +64,7 @@
                 android:id="@+id/cvKeteranganPembelian"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="30dp"
@@ -70,6 +73,7 @@
                 app:boxCornerRadiusBottomStart="23dp"
                 app:boxCornerRadiusTopEnd="23dp"
                 android:layout_marginTop="40dp"
+                app:strokeColor="@color/black"
                 android:layout_marginEnd="30dp"
                 android:textColorHint="@color/black"
                 app:layout_constraintTop_toBottomOf="@id/tilModKategoriNama">
@@ -91,9 +95,11 @@
                 android:id="@+id/rbQris"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="30dp"
+                app:strokeColor="@color/black"
                 app:boxCornerRadiusBottomEnd="23dp"
                 app:boxCornerRadiusTopStart="23dp"
                 app:boxCornerRadiusBottomStart="23dp"
@@ -109,6 +115,7 @@
                     android:layout_margin="15dp"
                     android:layout_height="wrap_content"
                     android:text="QRIS"
+                    android:textColor="@color/black"
                     android:fontFamily="@font/alata"
                     android:textSize="20sp"/>
 
@@ -118,9 +125,11 @@
                 android:id="@+id/rbTunai"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="30dp"
+                app:strokeColor="@color/black"
                 app:boxCornerRadiusBottomEnd="23dp"
                 app:boxCornerRadiusTopStart="23dp"
                 app:boxCornerRadiusBottomStart="23dp"
@@ -138,6 +147,7 @@
                     android:layout_margin="15dp"
                     android:layout_height="wrap_content"
                     android:text="Tunai"
+                    android:textColor="@color/black"
                     android:fontFamily="@font/alata"
                     android:textSize="20sp"/>
 
@@ -164,7 +174,7 @@
             android:text="Rp60.000"
             android:layout_marginStart="15dp"
             android:textSize="25sp"
-            android:textColor="@color/white"
+            android:textColor="#FFFFFF"
             android:fontFamily="@font/alata"/>
 
         <androidx.cardview.widget.CardView
@@ -181,7 +191,7 @@
                 android:layout_height="38dp"
                 android:paddingHorizontal="15dp"
                 android:textSize="20sp"
-                android:textColor="@color/white"
+                android:textColor="#FFFFFF"
                 android:layout_gravity="center"
                 android:fontFamily="@font/alata"
                 android:text="Bayar"/>
