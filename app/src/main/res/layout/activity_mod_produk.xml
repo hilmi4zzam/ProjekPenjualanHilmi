@@ -26,6 +26,51 @@
             app:layout_constraintTop_toTopOf="parent"
             android:textColor="@color/black"/>
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/cvUrlGambarProduk"
+            app:layout_constraintTop_toBottomOf="@id/tvTambahProduk"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:cardCornerRadius="23dp">
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@color/black"
+                android:id="@+id/previewUrlGambarProduk"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilModUrlGambarProduk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="30dp"
+            app:boxCornerRadiusBottomEnd="23dp"
+            app:boxCornerRadiusTopStart="23dp"
+            app:boxCornerRadiusBottomStart="23dp"
+            app:boxCornerRadiusTopEnd="23dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="30dp"
+            android:textColorHint="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/cvUrlGambarProduk"
+            android:hint="URL Gambar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:id="@+id/tietUrlGambarProduk"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/alata"
+                android:textSize="20sp"
+                android:textColor="@color/black"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilModProdukNama"
             android:layout_width="match_parent"
@@ -37,10 +82,10 @@
             app:boxCornerRadiusTopStart="23dp"
             app:boxCornerRadiusBottomStart="23dp"
             app:boxCornerRadiusTopEnd="23dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
             android:textColorHint="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/tvTambahProduk"
+            app:layout_constraintTop_toBottomOf="@id/tilModUrlGambarProduk"
             android:hint="Nama Produk">
 
             <com.google.android.material.textfield.TextInputEditText

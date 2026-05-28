@@ -18,6 +18,9 @@ import com.hilmi.projekpenjualan.laporan.DataLaporanPenjualan
 import com.hilmi.projekpenjualan.pegawai.DataPegawai
 import com.hilmi.projekpenjualan.produk.DataProduk
 import com.hilmi.projekpenjualan.transaksi.DataTransaksi
+import com.hilmi.projekpenjualan.model.ModelLaporan
+import java.text.NumberFormat
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +33,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvHaloPegawaiAktif: TextView
     private val pegawaiRef = FirebaseDatabase.getInstance().getReference("pegawai")
     private var pegawaiAktifListener: ValueEventListener? = null
+    private lateinit var tvSaldoValue: TextView
+    private val laporanRef = FirebaseDatabase.getInstance().getReference("laporan")
+    private var laporanListener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,12 +86,15 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         loadPegawaiAktif()
+        loadSaldoLaporan()
     }
 
     override fun onStop() {
         super.onStop()
         pegawaiAktifListener?.let { pegawaiRef.removeEventListener(it) }
         pegawaiAktifListener = null
+        laporanListener?.let { laporanRef.removeEventListener(it) }
+        laporanListener = null
     }
 
     fun init() {
@@ -96,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         CardLaporan = findViewById(R.id.menu5)
         CardPegawai = findViewById(R.id.menu4)
         tvHaloPegawaiAktif = findViewById(R.id.haihilmi)
+        tvSaldoValue = findViewById(R.id.tvSaldoValue)
     }
 
     private fun loadPegawaiAktif() {
@@ -120,5 +130,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         pegawaiRef.addValueEventListener(pegawaiAktifListener!!)
+    }
+
+    private fun loadSaldoLaporan() {
+        if (laporanListener != null) return
+
+        laporanListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var totalSaldo = 0
+                if (snapshot.exists()) {
+                    for (dataSnapshot in snapshot.children) {
+                        val laporan = dataSnapshot.getValue(ModelLaporan::class.java)
+                        if (laporan != null) {
+                            totalSaldo += laporan.totalHarga ?: 0
+                        }
+                    }
+                }
+                val localeID = Locale("in", "ID")
+                val formatRupiah = NumberFormat.getCurrencyInstance(localeID)
+                tvSaldoValue.text = formatRupiah.format(totalSaldo)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                tvSaldoValue.text = "Rp 0"
+            }
+        }
+
+        laporanRef.addValueEventListener(laporanListener!!)
     }
 }
