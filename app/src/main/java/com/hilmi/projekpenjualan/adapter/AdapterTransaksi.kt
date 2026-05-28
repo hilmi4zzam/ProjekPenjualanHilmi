@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.hilmi.projekpenjualan.R
 import com.hilmi.projekpenjualan.model.ModelProduk
 import java.text.NumberFormat
@@ -88,6 +89,14 @@ class AdapterTransaksi(private var produkList: List<ModelProduk>) :
         private val tvJumlah: TextView = itemView.findViewById(R.id.tvJumlahProduk)
 
         fun bind(produk: ModelProduk) {
+            if (!produk.fotoProduk.isNullOrEmpty()) {
+                Glide.with(itemView.context)
+                    .load(produk.fotoProduk)
+                    .into(ivLogo)
+            } else {
+                ivLogo.setImageResource(R.drawable.img_14)
+            }
+
             tvNama.text = produk.namaProduk
             
             val localeID = Locale("in", "ID")

@@ -8,7 +8,11 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.ImageView
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -37,6 +41,8 @@ class ModProduk : AppCompatActivity() {
     private lateinit var spKategori: AutoCompleteTextView
     private lateinit var spCabang: AutoCompleteTextView
     private lateinit var spStatus: AutoCompleteTextView
+    private lateinit var etUrlGambar: TextInputEditText
+    private lateinit var ivPreview: ImageView
     private lateinit var btnSimpan: MaterialButton
 
     private val database = FirebaseDatabase.getInstance()
@@ -66,6 +72,7 @@ class ModProduk : AppCompatActivity() {
         selectedProduk = intent.getParcelableExtra("PRODUK")
         if (selectedProduk != null) {
             tvTitle.text = "Edit Produk"
+            etUrlGambar.setText(selectedProduk?.fotoProduk)
             etNama.setText(selectedProduk?.namaProduk)
             etHarga.setText(selectedProduk?.hargaProduk.toString())
             etStok.setText(selectedProduk?.stokProduk.toString())
@@ -77,7 +84,23 @@ class ModProduk : AppCompatActivity() {
             if (statusList.isNotEmpty()) spStatus.setText(statusList[0], false)
         }
 
+        etUrlGambar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val url = s.toString().trim()
+                if (url.isNotEmpty()) {
+                    Glide.with(this@ModProduk)
+                        .load(url)
+                        .into(ivPreview)
+                } else {
+                    ivPreview.setImageResource(android.R.color.black)
+                }
+            }
+        })
+
         btnSimpan.setOnClickListener {
+            val urlGambar = etUrlGambar.text.toString().trim()
             val nama = etNama.text.toString().trim()
             val harga = etHarga.text.toString().trim()
             val stok = etStok.text.toString().trim()
@@ -128,6 +151,7 @@ class ModProduk : AppCompatActivity() {
             if (key != null) {
                 val produkData = mapOf(
                     "idProduk" to key,
+                    "fotoProduk" to urlGambar,
                     "namaProduk" to nama,
                     "hargaProduk" to harga.toInt(),
                     "stokProduk" to stokInt,
@@ -205,6 +229,8 @@ class ModProduk : AppCompatActivity() {
         etNama = findViewById(R.id.tietNamaProduk)
         etHarga = findViewById(R.id.tietHargaProduk)
         etStok = findViewById(R.id.tietStokProduk)
+        etUrlGambar = findViewById(R.id.tietUrlGambarProduk)
+        ivPreview = findViewById(R.id.previewUrlGambarProduk)
         spKategori = findViewById(R.id.spModKategoriProduk)
         spCabang = findViewById(R.id.spModCabangProduk)
         spStatus = findViewById(R.id.spModStatusProduk)
