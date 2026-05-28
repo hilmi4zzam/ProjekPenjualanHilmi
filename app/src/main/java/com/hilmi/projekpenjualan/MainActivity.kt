@@ -4,10 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.widget.TextView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.hilmi.projekpenjualan.cabang.DataCabang
 import com.hilmi.projekpenjualan.kategori.DataKategori
 import com.hilmi.projekpenjualan.laporan.DataLaporanPenjualan
@@ -23,14 +27,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var CardTransaksi : ConstraintLayout
     lateinit var CardLaporan : ConstraintLayout
     lateinit var CardPegawai : ConstraintLayout
+    private lateinit var tvHaloPegawaiAktif: TextView
+    private val pegawaiRef = FirebaseDatabase.getInstance().getReference("pegawai")
+    private var pegawaiAktifListener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // 2. Setting agar Icon (Jam, Baterai, Sinyal) berwarna HITAM/GELAP
-        val warnaIconStatusBar = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
-        warnaIconStatusBar.isAppearanceLightStatusBars = true
         setContentView(R.layout.activity_main)
 
         init()
@@ -73,6 +77,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        loadPegawaiAktif()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        pegawaiAktifListener?.let { pegawaiRef.removeEventListener(it) }
+        pegawaiAktifListener = null
+    }
+
     fun init() {
         CardKategori = findViewById(R.id.menu2)
         CardProduk = findViewById(R.id.menu1)
@@ -80,5 +95,30 @@ class MainActivity : AppCompatActivity() {
         CardTransaksi = findViewById(R.id.menu6)
         CardLaporan = findViewById(R.id.menu5)
         CardPegawai = findViewById(R.id.menu4)
+        tvHaloPegawaiAktif = findViewById(R.id.haihilmi)
+    }
+
+    private fun loadPegawaiAktif() {
+        if (pegawaiAktifListener != null) return
+
+        pegawaiAktifListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val namaPegawaiAktif = snapshot.children.firstOrNull { dataPegawai ->
+                    dataPegawai.child("statusPegawai").getValue(String::class.java) == "Aktif"
+                }?.child("namaPegawai")?.getValue(String::class.java)
+
+                tvHaloPegawaiAktif.text = if (namaPegawaiAktif.isNullOrBlank()) {
+                    "Halo"
+                } else {
+                    "Halo $namaPegawaiAktif"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                tvHaloPegawaiAktif.text = "Halo"
+            }
+        }
+
+        pegawaiRef.addValueEventListener(pegawaiAktifListener!!)
     }
 }
