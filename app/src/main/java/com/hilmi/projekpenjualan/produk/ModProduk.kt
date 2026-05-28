@@ -79,6 +79,8 @@ class ModProduk : AppCompatActivity() {
             spKategori.setText(selectedProduk?.idKategori, false)
             spCabang.setText(selectedProduk?.idCabang, false)
             spStatus.setText(selectedProduk?.statusProduk, false)
+            // Load preview gambar langsung saat mode edit
+            loadPreviewGambar(selectedProduk?.fotoProduk)
         } else {
             tvTitle.text = "Tambah Produk"
             if (statusList.isNotEmpty()) spStatus.setText(statusList[0], false)
@@ -89,13 +91,7 @@ class ModProduk : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val url = s.toString().trim()
-                if (url.isNotEmpty()) {
-                    Glide.with(this@ModProduk)
-                        .load(url)
-                        .into(ivPreview)
-                } else {
-                    ivPreview.setImageResource(android.R.color.black)
-                }
+                loadPreviewGambar(url)
             }
         })
 
@@ -173,6 +169,18 @@ class ModProduk : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+    }
+
+    private fun loadPreviewGambar(url: String?) {
+        if (!url.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(url)
+                .placeholder(R.drawable.img_14)
+                .error(R.drawable.img_14)
+                .into(ivPreview)
+        } else {
+            ivPreview.setImageResource(R.drawable.img_14)
         }
     }
 

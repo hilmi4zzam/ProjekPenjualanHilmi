@@ -53,6 +53,8 @@ class AdapterProduk(private val produkList: List<ModelProduk>) :
             if (!produk.fotoProduk.isNullOrEmpty()) {
                 Glide.with(itemView.context)
                     .load(produk.fotoProduk)
+                    .placeholder(R.drawable.img_14)
+                    .error(R.drawable.img_14)
                     .into(ivLogoProduk)
             } else {
                 ivLogoProduk.setImageResource(R.drawable.img_14)

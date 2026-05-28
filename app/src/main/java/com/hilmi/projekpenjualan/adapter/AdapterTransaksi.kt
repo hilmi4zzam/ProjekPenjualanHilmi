@@ -92,6 +92,8 @@ class AdapterTransaksi(private var produkList: List<ModelProduk>) :
             if (!produk.fotoProduk.isNullOrEmpty()) {
                 Glide.with(itemView.context)
                     .load(produk.fotoProduk)
+                    .placeholder(R.drawable.img_14)
+                    .error(R.drawable.img_14)
                     .into(ivLogo)
             } else {
                 ivLogo.setImageResource(R.drawable.img_14)

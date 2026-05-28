@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProjekPenjualanHilmi</string>
+    <string name="app_name">SatSet</string>
     <string-array name="statusKategori">
         <item>Aktif</item>
         <item>Nonaktif</item>
