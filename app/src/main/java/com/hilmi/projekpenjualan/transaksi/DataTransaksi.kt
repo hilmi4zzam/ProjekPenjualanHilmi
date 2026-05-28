@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +13,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.hilmi.projekpenjualan.R
+import com.hilmi.projekpenjualan.adapter.AdapterCategoryFilter
 import com.hilmi.projekpenjualan.adapter.AdapterTransaksi
+import com.hilmi.projekpenjualan.model.ModelKategori
 import com.hilmi.projekpenjualan.view_model.DataProdukViewModel
 import java.text.NumberFormat
 import java.util.Locale
@@ -23,6 +30,10 @@ class DataTransaksi : AppCompatActivity() {
     private val viewModel: DataProdukViewModel by viewModels()
     private lateinit var adapter: AdapterTransaksi
     private lateinit var rvDataProduk: RecyclerView
+    
+    private lateinit var adapterKategori: AdapterCategoryFilter
+    private lateinit var rvKategori: RecyclerView
+    
     private lateinit var tvTotalHarga: TextView
     private lateinit var btnReset: CardView
     private lateinit var btnPesan: CardView
@@ -57,6 +68,7 @@ class DataTransaksi : AppCompatActivity() {
         }
         
         initRecyclerView()
+        initCategoryFilter()
         observeViewModel()
         setupSearchView()
     }
@@ -85,8 +97,43 @@ class DataTransaksi : AppCompatActivity() {
         adapter.setOnQuantityChangeListener(object : AdapterTransaksi.OnQuantityChangeListener {
             override fun onQuantityChanged(totalPrice: Int) {
                 updateTotalHarga(totalPrice)
-                // Tampilkan tombol reset jika total harga > 0 (artinya ada produk yang dipilih)
                 btnReset.visibility = if (totalPrice > 0) View.VISIBLE else View.GONE
+            }
+        })
+    }
+    
+    private fun initCategoryFilter() {
+        rvKategori = findViewById(R.id.rvKategoriFilter)
+        rvKategori.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        
+        adapterKategori = AdapterCategoryFilter(emptyList())
+        rvKategori.adapter = adapterKategori
+        
+        adapterKategori.setOnCategoryClickListener(object : AdapterCategoryFilter.OnCategoryClickListener {
+            override fun onCategoryClick(categoryName: String?) {
+                viewModel.filterByCategory(categoryName)
+            }
+        })
+        
+        loadCategories()
+    }
+    
+    private fun loadCategories() {
+        val ref = FirebaseDatabase.getInstance().getReference("kategori")
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = ArrayList<ModelKategori>()
+                for (data in snapshot.children) {
+                    val kategori = data.getValue(ModelKategori::class.java)
+                    if (kategori?.statusKategori == "Aktif") {
+                        list.add(kategori)
+                    }
+                }
+                adapterKategori.updateData(list)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@DataTransaksi, "Gagal memuat kategori", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -99,7 +146,6 @@ class DataTransaksi : AppCompatActivity() {
 
     private fun observeViewModel() {
         viewModel.produkList.observe(this) { list ->
-            // Menampilkan produk yang statusnya "Aktif"
             val activeProducts = list.filter { it.statusProduk == "Aktif" }
             adapter.updateData(activeProducts)
             val totalPrice = adapter.getTotalPrice()

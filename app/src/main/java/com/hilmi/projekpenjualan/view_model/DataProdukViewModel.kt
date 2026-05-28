@@ -14,6 +14,10 @@ class DataProdukViewModel : ViewModel() {
     private val myRef = database.getReference("produk")
     val produkList = MutableLiveData<ArrayList<ModelProduk>>()
     private var originalProdukList = ArrayList<ModelProduk>()
+    
+    private var currentQuery: String? = null
+    private var currentCategory: String? = null
+    
     val isLoading = MutableLiveData<Boolean>()
     val isSearchEmpty = MutableLiveData<Boolean>()
 
@@ -36,8 +40,7 @@ class DataProdukViewModel : ViewModel() {
                     }
                     originalProdukList.clear()
                     originalProdukList.addAll(list)
-                    produkList.value = list
-                    isSearchEmpty.value = false
+                    applyFilters()
                 } else {
                     originalProdukList.clear()
                     produkList.value = ArrayList()
@@ -53,16 +56,34 @@ class DataProdukViewModel : ViewModel() {
     }
 
     fun filterList(query: String?) {
-        if (query.isNullOrEmpty()) {
-            produkList.value = originalProdukList
-            isSearchEmpty.value = false
-        } else {
-            val filteredList = originalProdukList.filter {
-                it.namaProduk?.lowercase()?.contains(query.lowercase()) == true
+        currentQuery = query
+        applyFilters()
+    }
+    
+    fun filterByCategory(category: String?) {
+        currentCategory = category
+        applyFilters()
+    }
+    
+    private fun applyFilters() {
+        var filteredList = originalProdukList.toList()
+        
+        // Filter by search query
+        if (!currentQuery.isNullOrEmpty()) {
+            filteredList = filteredList.filter {
+                it.namaProduk?.lowercase()?.contains(currentQuery!!.lowercase()) == true
             }
-            produkList.value = ArrayList(filteredList)
-            isSearchEmpty.value = filteredList.isEmpty()
         }
+        
+        // Filter by category
+        if (!currentCategory.isNullOrEmpty()) {
+            filteredList = filteredList.filter {
+                it.idKategori == currentCategory
+            }
+        }
+        
+        produkList.value = ArrayList(filteredList)
+        isSearchEmpty.value = filteredList.isEmpty()
     }
 
     fun deleteProduk(idProduk: String?) {
