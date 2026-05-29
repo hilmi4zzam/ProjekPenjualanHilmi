@@ -1,15 +1,15 @@
-# ⚡ SatSet - Point of Sale (POS) App
+# SatSet - Point of Sale (POS) App
 
 > Aplikasi kasir digital *sat-set* anti ribet! Dirancang khusus untuk mempermudah manajemen toko, pencatatan transaksi, hingga pengaturan pegawai dalam satu genggaman.
 
-## 🛠️ Tech Stack yang Dipakai
+## Tech Stack yang Dipakai
 * **Language:** Kotlin
 * **Architecture:** MVVM (Model-View-ViewModel) *[Sesuaikan jika berbeda]*
 * **UI/Design:** XML Layouts / Material Design
 * **Backend/Database:** Firebase Realtime Database / Firestore *[Sesuaikan dengan stack lu]*
 * **Tools:** Android Studio
 
-## 🔥 Key Features
+## Key Features
 Aplikasi ini punya beberapa fitur utama buat *handle* *flow* kasir dari awal sampai akhir:
 1.  **Authentication System:** Login aman buat kasir atau admin (Pegawai).
 2.  **Dashboard & Saldo Toko:** *Monitoring* total pendapatan/saldo toko secara *real-time*.
@@ -23,7 +23,7 @@ Aplikasi ini punya beberapa fitur utama buat *handle* *flow* kasir dari awal sam
 
 ---
 
-## 📸 App Screenshots
+## App Screenshots
 
 ### 1. Splash Screen & Login
 Tampilan awal saat user membuka aplikasi dan *login screen* untuk masuk ke sistem.
@@ -73,7 +73,7 @@ Pemilik toko bisa menambah pegawai baru atau menonaktifkan akun pegawai lama.
 
 ---
 
-## 💻 How to Run (Local Development)
+## How to Run (Local Development)
 1. *Clone* repository ini ke *local machine* lo.
 2. Buka **Android Studio**.
 3. Pilih menu `File > Open` dan cari folder project ini.
