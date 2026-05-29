@@ -1,18 +1,20 @@
 package com.hilmi.projekpenjualan.laporan
 
+import android.Manifest
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.print.PrintAttributes
-import android.print.PrintManager
 import android.view.LayoutInflater
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
@@ -22,6 +24,7 @@ import com.hilmi.projekpenjualan.model.CartItem
 import com.hilmi.projekpenjualan.model.ModelLaporan
 import java.text.NumberFormat
 import java.util.Locale
+import java.util.UUID
 
 class DetailLaporan : AppCompatActivity() {
 
@@ -89,7 +92,7 @@ class DetailLaporan : AppCompatActivity() {
         
         val sb = StringBuilder()
         sb.append("==============================\n")
-        sb.append("        HILMI STORE        \n")
+        sb.append("        Belum Kepikiran        \n")
         sb.append("==============================\n")
         sb.append("Kasir: ${selectedLaporan?.namaKasir ?: "-"}\n")
         sb.append("Nama: ${selectedLaporan?.namaPemesan ?: "-"}\n")
@@ -103,12 +106,11 @@ class DetailLaporan : AppCompatActivity() {
         }
         
         sb.append("------------------------------\n")
-        sb.append("DIBAYAR: ${formatRupiah.format(selectedLaporan?.dibayar ?: 0L)}\n")
-        sb.append("KEMBALIAN: ${formatRupiah.format(selectedLaporan?.kembalian ?: 0L)}\n")
-        sb.append("TOTAL: ${formatRupiah.format(selectedLaporan?.totalHarga ?: 0)}\n")
+        sb.append("Dibayar: ${formatRupiah.format(selectedLaporan?.dibayar ?: 0L)}\n")
+        sb.append("Kembalian: ${formatRupiah.format(selectedLaporan?.kembalian ?: 0L)}\n")
+        sb.append("TOtal: ${formatRupiah.format(selectedLaporan?.totalHarga ?: 0)}\n")
         sb.append("==============================\n")
         sb.append("Terima kasih atas kunjungannya!\n")
-        sb.append("==============================\n")
         
         return sb.toString()
     }
@@ -166,21 +168,78 @@ class DetailLaporan : AppCompatActivity() {
     }
 
     private fun cetakNota() {
-        val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val jobName = "${getString(R.string.app_name)} Document"
-        
-        val receiptText = generateReceiptText().replace("\n", "<br>")
-        val htmlContent = "<html><body><pre style='font-family: monospace; font-size: 10pt;'>$receiptText</pre></body></html>"
-        
-        val webView = WebView(this)
-        webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
-        
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                val printAdapter = webView.createPrintDocumentAdapter(jobName)
-                printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 101)
+                return
             }
         }
+        mulaiCetakBluetooth()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mulaiCetakBluetooth()
+            } else {
+                Toast.makeText(this, "Izin Bluetooth diperlukan untuk mencetak", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun mulaiCetakBluetooth() {
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
+        val bluetoothAdapter = bluetoothManager?.adapter
+
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
+            Toast.makeText(this, "Tidak ada printer terdeteksi", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && 
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
+        val pairedDevices = bluetoothAdapter.bondedDevices
+        if (pairedDevices.isNullOrEmpty()) {
+            Toast.makeText(this, "Tidak ada printer terdeteksi", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val device = pairedDevices.firstOrNull {
+            it.bluetoothClass?.majorDeviceClass == 1536 || 
+            it.bluetoothClass?.majorDeviceClass == 7936
+        } ?: pairedDevices.first()
+
+        val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+
+        Thread {
+            try {
+                val socket = device.createRfcommSocketToServiceRecord(uuid)
+                socket.connect()
+                val outputStream = socket.outputStream
+                
+                outputStream.write(byteArrayOf(0x1B, 0x40))
+                
+                val text = generateReceiptText()
+                outputStream.write(text.toByteArray())
+                
+                outputStream.write("\n\n\n".toByteArray())
+                outputStream.flush()
+                socket.close()
+                
+                runOnUiThread {
+                    Toast.makeText(this@DetailLaporan, "Berhasil mencetak nota", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this@DetailLaporan, "Gagal terhubung ke printer", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
     }
 
     private fun displayItems(items: ArrayList<CartItem>?) {

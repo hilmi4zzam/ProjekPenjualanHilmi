@@ -2,6 +2,13 @@ package com.hilmi.projekpenjualan.transaksi
 
 import android.content.Context
 import android.content.Intent
+import android.Manifest
+import android.bluetooth.BluetoothManager
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import java.util.UUID
 import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
@@ -46,6 +53,7 @@ class Nota : AppCompatActivity() {
     private var isLaporanSaved = false
     private var isLaporanSaving = false
     private var namaKasirAktif: String = "-"
+    private var printWebView: WebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -251,21 +259,78 @@ class Nota : AppCompatActivity() {
     }
 
     private fun cetakNota() {
-        val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
-        val jobName = "${getString(R.string.app_name)} Document"
-        
-        val receiptText = generateReceiptText().replace("\n", "<br>")
-        val htmlContent = "<html><body><pre style='font-family: monospace; font-size: 10pt;'>$receiptText</pre></body></html>"
-        
-        val webView = WebView(this)
-        webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
-        
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                val printAdapter = webView.createPrintDocumentAdapter(jobName)
-                printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_CONNECT), 101)
+                return
             }
         }
+        mulaiCetakBluetooth()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mulaiCetakBluetooth()
+            } else {
+                Toast.makeText(this, "Izin Bluetooth diperlukan untuk mencetak", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun mulaiCetakBluetooth() {
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
+        val bluetoothAdapter = bluetoothManager?.adapter
+
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
+            Toast.makeText(this, "Tidak ada printer terdeteksi", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && 
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
+        val pairedDevices = bluetoothAdapter.bondedDevices
+        if (pairedDevices.isNullOrEmpty()) {
+            Toast.makeText(this, "Tidak ada printer terdeteksi", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val device = pairedDevices.firstOrNull {
+            it.bluetoothClass?.majorDeviceClass == 1536 || 
+            it.bluetoothClass?.majorDeviceClass == 7936
+        } ?: pairedDevices.first()
+
+        val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+
+        Thread {
+            try {
+                val socket = device.createRfcommSocketToServiceRecord(uuid)
+                socket.connect()
+                val outputStream = socket.outputStream
+                
+                outputStream.write(byteArrayOf(0x1B, 0x40))
+                
+                val text = generateReceiptText()
+                outputStream.write(text.toByteArray())
+                
+                outputStream.write("\n\n\n".toByteArray())
+                outputStream.flush()
+                socket.close()
+                
+                runOnUiThread {
+                    Toast.makeText(this@Nota, "Berhasil mencetak nota", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this@Nota, "Gagal terhubung ke printer", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
     }
 
     private fun updateStockInFirebase(items: ArrayList<CartItem>?) {

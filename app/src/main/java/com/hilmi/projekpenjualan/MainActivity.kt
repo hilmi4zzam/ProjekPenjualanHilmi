@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.widget.TextView
+import android.widget.ImageView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -73,6 +75,23 @@ class MainActivity : AppCompatActivity() {
         CardPegawai.setOnClickListener {
             val intent = Intent(this@MainActivity, DataPegawai::class.java)
             startActivity(intent)
+        }
+
+        val ivProfile = findViewById<ImageView>(R.id.ivProfile)
+        ivProfile.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Keluar")
+                .setMessage("Pastikan keluar sebelum menutup aplikasi")
+                .setNegativeButton("Batal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton("Keluar") { _, _ ->
+                    val intent = Intent(this@MainActivity, Masuk::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+                .show()
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

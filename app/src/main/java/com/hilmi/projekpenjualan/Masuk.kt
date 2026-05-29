@@ -21,13 +21,36 @@ class Masuk : AppCompatActivity() {
             insets
         }
 
+        val tilModMasuk = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilModMasuk)
+        val tilModMasukPassword = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilModMasukPassword)
         val tietMasuk = findViewById<TextInputEditText>(R.id.tietMasuk)
         val tietMasukPassword = findViewById<TextInputEditText>(R.id.tietMasukPassword)
         val btnLanjutkan = findViewById<MaterialButton>(R.id.btnLanjutkan)
 
         btnLanjutkan.setOnClickListener {
-            val username = tietMasuk.text.toString()
-            val password = tietMasukPassword.text.toString()
+            val username = tietMasuk.text.toString().trim()
+            val password = tietMasukPassword.text.toString().trim()
+
+            tilModMasuk.error = null
+            tilModMasukPassword.error = null
+
+            var isValid = true
+
+            if (username.isEmpty()) {
+                tilModMasuk.error = "Nama pengguna wajib diisi"
+                isValid = false
+            }
+
+            if (password.isEmpty()) {
+                tilModMasukPassword.error = "Kata sandi wajib diisi"
+                isValid = false
+            }
+
+            if (!isValid) {
+                if (username.isEmpty()) tietMasuk.requestFocus()
+                else if (password.isEmpty()) tietMasukPassword.requestFocus()
+                return@setOnClickListener
+            }
 
             if (username == "kasirin aku dong" && password == "12345678") {
                 val intent = Intent(this, MainActivity::class.java)

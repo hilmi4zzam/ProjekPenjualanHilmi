@@ -81,12 +81,12 @@
                         android:hint="Nama Pengguna">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
                             android:id="@+id/tietMasuk"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/alata"
-                            android:textSize="20sp"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/black"
+                            android:textSize="20sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
