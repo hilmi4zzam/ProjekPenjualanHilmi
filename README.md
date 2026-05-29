@@ -4,9 +4,9 @@
 
 ## Tech Stack yang Dipakai
 * **Language:** Kotlin
-* **Architecture:** MVVM (Model-View-ViewModel) *[Sesuaikan jika berbeda]*
-* **UI/Design:** XML Layouts / Material Design
-* **Backend/Database:** Firebase Realtime Database / Firestore *[Sesuaikan dengan stack lu]*
+* **Architecture:** MVVM (Model-View-ViewModel)
+* **UI/Design:** XML Layouts
+* **Backend/Database:** Firebase Realtime Database
 * **Tools:** Android Studio
 
 ## Key Features
